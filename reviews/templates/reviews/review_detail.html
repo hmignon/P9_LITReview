@@ -1,0 +1,33 @@
+{% extends "reviews/_base.html" %}
+{% load static %}
+{% block content %}
+
+    <article class="media content-section">
+        <img class="rounded-circle article-img" src="{{ object.user.profile.image.url }}">
+        <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="#">{{ object.user }}</a>
+              <small class="text-muted">{{ object.date_posted|date:"H:i, F d, Y" }}</small>
+                {% if object.user == user %}
+                <div>
+                    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'review-update' object.id %}">Update</a>
+                    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'review-delete' object.id %}">Delete</a>
+                </div>
+                {% endif %}
+            </div>
+            <h2 class="article-title">{{ object.headline }}</h2>
+            <div class="ratings">
+                <i class="star-full"><img src="{% static 'reviews/img/etoile.png' %}"></i>
+                <i class="star-full"><img src="{% static 'reviews/img/etoile.png' %}"></i>
+                <i class="star-full"><img src="{% static 'reviews/img/etoile.png' %}"></i>
+                <i class="star-full"><img src="{% static 'reviews/img/etoile.png' %}"></i>
+                <i class="star-empty"><img src="{% static 'reviews/img/etoile_e.png' %}"></i>
+            </div>
+            <div class="review-body">
+                <img class="img-thumbnail float-left mb-1 mr-3" src="{{ object.image.url }}" alt="{{ object.headline }}">
+                <p class="article-content text-justify mt-3 mr-3">{{ object.body }}</p>
+            </div>
+        </div>
+    </article>
+
+{% endblock content %}
