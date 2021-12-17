@@ -36,18 +36,41 @@ ul {
   color: #5f6294;
 }
 
-.ratings i {
-    max-width: 40px;
+.star-rating {
+  color: #444444!important;
+}
+.star-rating i {
+  letter-spacing: -1px;
+  width: auto;
+}
+.star-rating a {
+  margin-left: 10px;
 }
 
-.rating-color {
-    color: #fbc634 !important
+.star-rating-1 i:first-child {
+  color: #ffc107;
 }
 
-.review-rating {
-    font-weight: 400;
-    margin-bottom: 2px;
-    font-size: 16px !important
+.star-rating-2 i:first-child,
+.star-rating-2 i:first-child + i {
+  color: #ffc107;
+}
+
+.star-rating-3 i:first-child,
+.star-rating-3 i:first-child + i,
+.star-rating-3 i:first-child + i + i {
+  color: #ffc107;
+}
+
+.star-rating-4 i:first-child,
+.star-rating-4 i:first-child + i,
+.star-rating-4 i:first-child + i + i,
+.star-rating-4 i:first-child + i + i + i {
+  color: #ffc107;
+}
+
+.star-rating-5 i {
+  color: #ffc107;
 }
 
 .article-title {

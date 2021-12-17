@@ -31,11 +31,11 @@ class Ticket(models.Model):
 class Review(models.Model):
     # ticket = models.ForeignKey(to=Ticket, on_delete=models.CASCADE)
     class Rating(models.IntegerChoices):
-        ONE = (1, '1')
-        TWO = (2, '2')
-        THREE = (3, '3')
-        FOUR = (4, '4')
-        FIVE = (5, '5')
+        ONE = (1, '1 star')
+        TWO = (2, '2 stars')
+        THREE = (3, '3 stars')
+        FOUR = (4, '4 stars')
+        FIVE = (5, '5 stars')
 
     rating = models.IntegerField(choices=Rating.choices)
 
