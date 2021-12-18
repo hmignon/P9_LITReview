@@ -1,6 +1,72 @@
 {% extends "reviews/_base.html" %}
+{% load static %}
 {% block content %}
 
-    <h1>Posts</h1>
+    <div class="container">
+        <div class="row mb-3">
+            <h2 class="col-8 py-2 mb-0">Posts by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})</h2>
+            <div class="btn-group col py-2" role="group">
+                <a type="button" class="btn btn-primary" href="#">Request Review</a>
+                <a type="button" class="btn btn-success" href="{% url 'review-new' %}">Write Review</a>
+            </div>
+        </div>
+    </div>
+
+    {% for post in posts %}
+        <article class="media content-section">
+            <img class="rounded-circle article-img" src="{{ post.user.profile.image.url }}">
+          <div class="media-body">
+            <div class="article-metadata">
+              <a class="mr-2" href="{% url 'user-posts' post.user.username %}">{{ post.user }}</a>
+              <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
+            </div>
+            <h2>
+                <a class="article-title" href="{% url 'review-detail' post.id %}">
+                    {{ post.headline }}
+                    <h6><span class="badge badge-success mt-2">Review</span></h6>
+                </a>
+            </h2>
+              <p class="star-rating-{{ post.rating }}" style="font-size: 22px; color: #cccccc">
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+                <i class="bi bi-star-fill"></i>
+              </p>
+              <div class="review-body">
+                  {% if post.image %}
+                    <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.image.url }}" alt="{{ post.headline }}">
+                  {% endif %}
+                  <p class="article-content text-justify mt-3">{{ post.body }}</p>
+              </div>
+          </div>
+        </article>
+    {% endfor %}
+
+    {% if is_paginated %}
+        <nav class="page-nav mb-5 mr-2">
+            <ul class="pagination justify-content-end">
+
+            {% if page_obj.has_previous %}
+                <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+            {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+            {% endif %}
+
+            </ul>
+        </nav>
+    {% endif %}
 
 {% endblock content %}

@@ -33,18 +33,7 @@ ul {
 }
 
 .mr-2 {
-  color: #5f6294;
-}
-
-.star-rating {
-  color: #444444!important;
-}
-.star-rating i {
-  letter-spacing: -1px;
-  width: auto;
-}
-.star-rating a {
-  margin-left: 10px;
+  color: #007bff;
 }
 
 .star-rating-1 i:first-child {
@@ -78,7 +67,7 @@ ul {
 }
 
 a.article-title:hover {
-  color: #474c97;
+  color: #007bff;
   text-decoration: none;
 }
 

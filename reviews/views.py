@@ -1,4 +1,10 @@
-from django.shortcuts import render
+from itertools import chain
+
+from django.contrib.auth.models import User
+from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import CharField, Value
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
@@ -8,14 +14,105 @@ from django.views.generic import (
     UpdateView,
     DeleteView
 )
-from .models import Review
+from .models import Review, Ticket
+from .forms import NewReviewForm, NewTicketForm
 
 
+@login_required
+def feed(request):
+    reviews = get_users_viewable_reviews(request.user)
+    tickets = get_users_viewable_tickets(request.user)
+
+    posts = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
+
+    paginator = Paginator(posts, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        'posts': posts,
+        'title': 'Feed',
+        'page_obj': page_obj
+    }
+
+    return render(request, 'reviews/feed.html', context)
+
+
+def get_users_viewable_reviews(user: User):
+    # TODO add followed reviews
+    user_reviews = Review.objects.filter(user=user)
+    user_reviews = user_reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    return user_reviews
+
+
+def get_users_viewable_tickets(user: User):
+    # TODO add followed tickets
+    user_tickets = Ticket.objects.filter(user=user)
+    user_tickets = user_tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    return user_tickets
+
+
+"""
 class ReviewListView(LoginRequiredMixin, ListView):
     model = Review
     template_name = 'reviews/feed.html'
     context_object_name = 'posts'
     ordering = ['-date_posted']
+    paginate_by = 5
+"""
+
+
+def new_review(request):
+    if request.method == 'POST':
+        form = NewReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            title = form.cleaned_data.get('headline')
+            messages.success(request, f'Your review {title} has been created!')
+            return redirect('reviews-feed')
+
+    else:
+        form = NewReviewForm()
+
+    context = {
+        'form': form,
+        'title': 'New Review',
+    }
+
+    return render(request, 'reviews/review_form.html', context)
+
+
+def new_ticket(request):
+    if request.method == 'POST':
+        form = NewTicketForm(request.POST)
+        if form.is_valid():
+            form.save(request)
+            title = form.cleaned_data.get('title')
+            messages.success(request, f'Your ticket {title} has been created!')
+            return redirect('reviews-feed')
+
+    else:
+        form = NewTicketForm()
+
+    context = {
+        'form': form,
+        'title': 'New Ticket',
+    }
+
+    return render(request, 'reviews/review_form.html', context)
+
+
+class UserPostListView(ListView):
+    model = Review
+    template_name = 'reviews/posts.html'
+    context_object_name = 'posts'
+    paginate_by = 5
+
+    def get_queryset(self):
+        user = get_object_or_404(User, username=self.kwargs.get('username'))
+        return Review.objects.filter(user=user).order_by('-time_created')
 
 
 class ReviewDetailView(LoginRequiredMixin, DetailView):
@@ -55,6 +152,10 @@ class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == post.user:
             return True
         return False
+
+
+class TicketDetailView(LoginRequiredMixin, DetailView):
+    model = Ticket
 
 
 @login_required
