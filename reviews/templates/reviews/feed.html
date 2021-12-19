@@ -2,155 +2,75 @@
 {% load static %}
 {% block content %}
 
-    <div class="container">
-        <div class="row mb-3">
-            <h2 class="col-8 py-2 mb-0">
-                {% if posts %}
+<div class="container">
+  <div class="row mb-3">
+    <h1 class="col-8 py-2 mb-0">
+      {% if posts %}
 
-                    {% if request.get_full_path == "/" %}
-                        Feed
+      {% if request.get_full_path == "/" %}
+      Feed
+      {% else %}
+      My Posts ({{ page_obj.paginator.count }})
+      {% endif %}
 
-                    {% else %}
-                        Posts by {{ view.kwargs.username }} ({{ page_obj.paginator.count }})
-
-                    {% endif %}
-
-                {% endif %}
-            </h2>
-            <div class="btn-group col py-2" role="group">
-                <a type="button" class="btn btn-primary" href="{% url 'ticket-new' %}">Request Review</a>
-                <a type="button" class="btn btn-success" href="{% url 'review-new' %}">Write Review</a>
-            </div>
-        </div>
+      {% endif %}
+    </h1>
+    <div class="btn-group col py-2 mt-2" role="group">
+      <a type="button" class="btn btn-primary" href="{% url 'ticket-new' %}">Request Review</a>
+      <a type="button" class="btn btn-success" href="{% url 'review-new' %}">Write Review</a>
     </div>
+  </div>
+</div>
 
-    {% if posts %}
+{% if posts %}
 
-        {% for post in posts %}
+{% for post in posts %}
 
-            {% if post.content_type == 'REVIEW' %}
-                <article class="media content-section">
-                    <img class="rounded-circle article-img" src="{{ post.user.profile.image.url }}">
-                  <div class="media-body">
-                    <div class="article-metadata">
-                      <a class="mr-2" href="{% url 'user-posts' post.user.username %}">{{ post.user }}</a>
-                      <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
-                    </div>
-                    <h2 class="mt-2">
-                        <a class="article-title" href="{% url 'review-detail' post.id %}">
-                            <h6 class="mb-0"><span class="badge badge-success">Review</span></h6>
-                            {{ post.headline }}
-                        </a>
-                    </h2>
-                      <p class="star-rating-{{ post.rating }}" style="font-size: 22px; color: #cccccc">
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                        <i class="bi bi-star-fill"></i>
-                      </p>
-                      <div class="review-body">
-                          {% if post.image %}
-                            <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.image.url }}" alt="{{ post.headline }}">
-                          {% endif %}
-                        <p class="article-content text-justify mt-3 mr-3">{{ post.body }}</p>
+{% if post.content_type == 'REVIEW' %}
+{% include 'reviews/review_snippet.html' %}
+{% elif post.content_type == 'TICKET' %}
+{% include 'reviews/ticket_snippet.html' %}
+{% endif %}
 
-                          {% if post.ticket %}
-                              <div class="media mt-5">
-                                  <img class="rounded-circle article-img" style="height:50px; width:50px" src="{{ post.ticket.user.profile.image.url }}">
-                                  <div class="media-body">
-                                      <div class="article-metadata">
-                                        <a class="mr-2" href="{% url 'user-posts' post.ticket.user.username %}">{{ post.ticket.user }}</a>
-                                        <small class="text-muted">{{ post.ticket.time_created|date:"H:i, F d, Y" }}</small>
-                                      </div>
-                                      <h4 class="mt-2">
-                                        <a class="article-title mt-0" href="{% url 'ticket-detail' post.ticket.id %}">
-                                            <h6 class="mb-0"><span class="badge badge-primary">Ticket</span></h6>
-                                            {{ post.ticket.title }}
-                                        </a>
-                                      </h4>
-                                      <div class="ticket-description">
-                                          {% if post.ticket.image %}
-                                            <img class="img-thumbnail float-left mr-3" style="height:120px" src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}">
-                                          {% endif %}
-                                          <p class="article-content text-justify mt-3 mr-3" style="font-size:15px">{{ post.ticket.description }}</p>
-                                      </div>
-                                  </div>
-                              </div>
-                          {% endif %}
+{% endfor %}
 
-                      </div>
-                  </div>
-                </article>
+{% else %}
 
-            {% elif post.content_type == 'TICKET' %}
-
-                <article class="media content-section">
-                    <img class="rounded-circle article-img" src="{{ post.user.profile.image.url }}">
-                  <div class="media-body">
-                    <div class="article-metadata">
-                      <a class="mr-2" href="{% url 'user-posts' post.user.username %}">{{ post.user }}</a>
-                      <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
-                    </div>
-                    <h2 class="mt-2">
-                        <a class="article-title" href="{% url 'ticket-detail' post.id %}">
-                            <h6 class="mb-0"><span class="badge badge-primary">Ticket</span></h6>
-                            {{ post.title }}
-                        </a>
-                    </h2>
-                      <div class="ticket-description">
-                          {% if post.image %}
-                            <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.image.url }}" alt="{{ post.title }}">
-                          {% endif %}
-                        <p class="article-content text-justify mt-3 mr-3">{{ post.description }}</p>
-                      </div>
-                      <div class="btn float-right mt-3">
-                        <a type="button" class="btn btn-success btn-sm" href="#">Write Review in response to {{ post.user }}</a>
-                      </div>
-                  </div>
-                </article>
-
-            {% endif %}
-
-        {% endfor %}
-
-    {% else %}
-
-        <div class="no-posts">
-            <h4 class="mb-3">No posts to display</h4>
-            <p class="mb-4">Write or request a review, or subscribe to a user to view their posts.</p>
-            <a type="button" class="btn btn-success" href="{% url 'reviews-subs' %}">View Subscriptions</a>
-        </div>
+<div class="no-posts">
+  <h4 class="mb-3">No posts to display</h4>
+  <p class="mb-4">Write or request a review, or subscribe to a user to view their posts.</p>
+  <a type="button" class="btn btn-success" href="{% url 'reviews-subs' %}">View Subscriptions</a>
+</div>
 
 
+{% endif %}
+
+{% if is_paginated %}
+
+<nav class="page-nav mb-5 mr-2">
+  <ul class="pagination justify-content-end">
+
+    {% if page_obj.has_previous %}
+    <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
     {% endif %}
 
-    {% if is_paginated %}
-
-        <nav class="page-nav mb-5 mr-2">
-            <ul class="pagination justify-content-end">
-
-            {% if page_obj.has_previous %}
-                <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
-            {% endif %}
-
-                {% for num in page_obj.paginator.page_range %}
-                    {% if page_obj.number == num %}
-                        <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-                    {% endif %}
-                {% endfor %}
-
-            {% if page_obj.has_next %}
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
-            {% endif %}
-
-            </ul>
-        </nav>
-
+    {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}
+    <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a
+      class="page-link" href="?page={{ num }}">{{ num }}</a></li>
     {% endif %}
+    {% endfor %}
+
+    {% if page_obj.has_next %}
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+    {% endif %}
+
+  </ul>
+</nav>
+
+{% endif %}
 
 {% endblock content %}
