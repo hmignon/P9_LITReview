@@ -1,4 +1,4 @@
-from .models import Review
+from .models import Review, Ticket
 
 from django import forms
 
@@ -32,7 +32,7 @@ class NewReviewForm(forms.ModelForm):
         fields = ['headline', 'rating', 'body', 'image']
 
 
-class NewTicketForm(forms.Form):
+class NewTicketForm(forms.ModelForm):
     title = forms.CharField(
         label="Title",
         max_length=128,
@@ -50,5 +50,6 @@ class NewTicketForm(forms.Form):
         required=False
     )
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    class Meta:
+        model = Ticket
+        fields = ['title', 'description', 'image']

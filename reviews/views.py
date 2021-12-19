@@ -1,10 +1,14 @@
+# TODO image not saving ticket and review (new and update)
+# TODO title on review form page
+
 from itertools import chain
 
+from django.http import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.db.models import CharField, Value
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import (
@@ -64,31 +68,12 @@ class ReviewListView(LoginRequiredMixin, ListView):
 """
 
 
-def new_review(request):
-    if request.method == 'POST':
-        form = NewReviewForm(request.POST)
-        if form.is_valid():
-            form.save()
-            title = form.cleaned_data.get('headline')
-            messages.success(request, f'Your review {title} has been created!')
-            return redirect('reviews-feed')
-
-    else:
-        form = NewReviewForm()
-
-    context = {
-        'form': form,
-        'title': 'New Review',
-    }
-
-    return render(request, 'reviews/review_form.html', context)
-
-
 def new_ticket(request):
     if request.method == 'POST':
         form = NewTicketForm(request.POST)
         if form.is_valid():
             form.save(request)
+            form.instance.user = request.user
             title = form.cleaned_data.get('title')
             messages.success(request, f'Your ticket {title} has been created!')
             return redirect('reviews-feed')
@@ -115,13 +100,24 @@ class UserPostListView(ListView):
         return Review.objects.filter(user=user).order_by('-time_created')
 
 
+class TicketNewView(LoginRequiredMixin, CreateView):
+    model = Ticket
+    template_name = 'reviews/review_form.html'
+    form_class = NewTicketForm
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+
 class ReviewDetailView(LoginRequiredMixin, DetailView):
     model = Review
 
 
 class ReviewNewView(LoginRequiredMixin, CreateView):
     model = Review
-    fields = ['headline', 'rating', 'body', 'image']
+    template_name = 'reviews/review_form.html'
+    form_class = NewReviewForm
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -130,7 +126,8 @@ class ReviewNewView(LoginRequiredMixin, CreateView):
 
 class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Review
-    fields = ['headline', 'rating', 'body', 'image']
+    template_name = 'reviews/review_form.html'
+    form_class = NewReviewForm
 
     def form_valid(self, form):
         form.instance.user = self.request.user

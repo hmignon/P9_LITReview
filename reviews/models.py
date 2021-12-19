@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.shortcuts import reverse
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
 from PIL import Image, ImageOps
@@ -29,6 +30,9 @@ class Ticket(models.Model):
 
             img.save(self.image.path)
 
+    def get_absolute_url(self):
+        return reverse('ticket-detail', kwargs={'pk': self.pk})
+
 
 class Review(models.Model):
     ticket = models.ForeignKey(blank=True, null=True, to=Ticket, on_delete=models.CASCADE)
@@ -56,6 +60,9 @@ class Review(models.Model):
             )
 
             img.save(self.image.path)
+
+    def get_absolute_url(self):
+        return reverse('review-detail', kwargs={'pk': self.pk})
 
 
 class UserFollow(models.Model):
