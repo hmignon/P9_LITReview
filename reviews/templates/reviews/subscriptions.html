@@ -1,6 +1,77 @@
 {% extends "reviews/_base.html" %}
 {% block content %}
 
-<h1>Subscriptions</h1>
+<div class="container">
+  <div class="mb-3">
+    <h1 class="mb-0">Subscriptions</h1>
+  </div>
+</div>
+
+<div class="content-section">
+  <h4 class="mb-3 mt-2">Subscribe to a user</h4>
+  <fieldset class="form-group mt-3">
+    <form class="form-group" method="POST">
+      {% csrf_token %}
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Enter username here">
+        <div class="input-group-append">
+          <button class="btn btn-success" type="submit" id="button-addon2">Subscribe</button>
+        </div>
+      </div>
+    </form>
+  </fieldset>
+
+  <h4 class="mb-3">Followed users (total)</h4>
+  <div class="card mb-5">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <p class="mb-0">
+          <img class="rounded-circle article-img" src="#" style="height:50px; width:50px">
+          Username 1
+            <a class="btn btn-outline-danger btn-sm float-right mt-2" href="#">Unsubscribe</a>
+        </p>
+      </li>
+      <li class="list-group-item">
+        <p class="mb-0">
+          <img class="rounded-circle article-img" src="#" style="height:50px; width:50px">
+          Username 2
+            <a class="btn btn-outline-danger btn-sm float-right mt-2" href="#">Unsubscribe</a>
+        </p>
+      </li>
+      <li class="list-group-item">
+        <p class="mb-0">
+          <img class="rounded-circle article-img" src="#" style="height:50px; width:50px">
+          Username 3
+            <a class="btn btn-outline-danger btn-sm float-right mt-2" href="#">Unsubscribe</a>
+        </p>
+      </li>
+    </ul>
+  </div>
+
+  <h4 class="mb-3">Users following you (total)</h4>
+  <div class="card mb-4">
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <p class="mb-0">
+          <img class="rounded-circle article-img" src="#" style="height:50px; width:50px">
+          Username 1
+        </p>
+      </li>
+      <li class="list-group-item">
+        <p class="mb-0">
+          <img class="rounded-circle article-img" src="#" style="height:50px; width:50px">
+          Username 2
+        </p>
+      </li>
+      <li class="list-group-item">
+        <p class="mb-0">
+          <img class="rounded-circle article-img" src="#" style="height:50px; width:50px">
+          Username 3
+        </p>
+      </li>
+    </ul>
+  </div>
+
+</div>
 
 {% endblock content %}

@@ -13,7 +13,7 @@ class NewReviewForm(forms.ModelForm):
     rating = forms.ChoiceField(
         label="Rating",
         widget=forms.RadioSelect(),
-        choices=[(str(x+1), x+1) for x in range(5)],
+        choices=[(str(x + 1), x + 1) for x in range(5)],
         error_messages={'required': 'Please enter a rating.'}
     )
     body = forms.CharField(

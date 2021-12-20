@@ -36,11 +36,24 @@
 
 {% else %}
 
-<div class="no-posts">
-  <h4 class="mb-3">No posts to display</h4>
-  <p class="mb-4">Write or request a review, or subscribe to a user to view their posts.</p>
-  <a type="button" class="btn btn-success" href="{% url 'reviews-subs' %}">View Subscriptions</a>
+{% if request.get_full_path == "/" %}
+<div class="card text-center">
+  <div class="card-body">
+    <h5 class="card-title">No posts to display</h5>
+    <p class="card-text">Write or request a review, or subscribe to a user to view their posts.</p>
+    <a type="button" class="btn btn-success" href="{% url 'reviews-subs' %}">View Subscriptions</a>
+  </div>
 </div>
+
+{% else %}
+<div class="card text-center">
+  <div class="card-body">
+    <h5 class="card-title">No posts to display</h5>
+    <p class="card-text">You have not written any posts yet. Write or request a review to get started.</p>
+  </div>
+</div>
+
+{% endif %}
 
 
 {% endif %}
@@ -58,8 +71,8 @@
     {% for num in page_obj.paginator.page_range %}
     {% if page_obj.number == num %}
     <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a
-      class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
     {% endif %}
     {% endfor %}
 

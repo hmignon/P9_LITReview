@@ -1,29 +1,28 @@
-<article class="media content-section">
+<article class="media content-section" style="background:#f5f5f5">
   <img class="rounded-circle article-img" src="{{ post.user.profile.image.url }}">
   <div class="media-body">
     <div class="article-metadata">
       {% if post.user == user %}
-      <a class="mr-2" href="{% url 'user-posts' post.user.username %}">{{ post.user }}</a>
-      {% else %}
+      <a class="mr-2" href="{% url 'user-posts' %}">{{ post.user }}</a> {% else %}
       <p class="mr-2 mb-0" style="display: inline">{{ post.user }}</p>
       {% endif %}
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
+      {% if post.user == user %}
+      <div>
+        <a class="btn btn-outline-secondary btn-sm mt-1 mb-1" href="{% url 'ticket-update' post.id %}">Update</a>
+        <a class="btn btn-outline-danger btn-sm mt-1 mb-1" href="{% url 'ticket-delete' post.id %}">Delete</a>
+      </div>
+      {% endif %}
     </div>
-    <h2 class="mt-2">
-      <a class="article-title" href="{% url 'ticket-detail' post.id %}">
-        <h6 class="mb-0"><span class="badge badge-primary">Ticket</span></h6>
-        {{ post.title }}
-      </a>
-    </h2>
+    <h6 class="mb-0"><span class="badge badge-primary">Ticket</span></h6>
+    <h2 class="mt-0">{{ post.title }}</h2>
     <div class="ticket-description">
       {% if post.image %}
-      <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.image.url }}"
-           alt="{{ post.title }}">
-      {% endif %}
+      <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.image.url }}" alt="{{ post.title }}"> {% endif %}
       <p class="article-content text-justify mt-3 mr-3">{{ post.description }}</p>
     </div>
-    <div class="btn float-right mt-3">
-      <a type="button" class="btn btn-success btn-sm" href="#">Write Review in response to {{ post.user }}</a>
+    <div class="btn float-right mt-2">
+      <a type="button" class="btn btn-success btn-sm" href="#">Write Review</a>
     </div>
   </div>
 </article>
