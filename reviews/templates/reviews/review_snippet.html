@@ -9,10 +9,8 @@
       {% endif %}
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
       {% if post.user == user %}
-      <div>
         <a class="btn btn-outline-secondary btn-sm mt-1 mb-1" href="{% url 'review-update' post.id %}">Update</a>
         <a class="btn btn-outline-danger btn-sm mt-1 mb-1" href="{% url 'review-delete' post.id %}">Delete</a>
-      </div>
       {% endif %}
     </div>
     <h6 class="mb-0"><span class="badge badge-success">Review</span></h6>

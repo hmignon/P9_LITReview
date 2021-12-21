@@ -3,19 +3,13 @@
 {% block content %}
 
 <div class="container">
-  <div class="row mb-3">
+  <div class="row mb-2">
     <h1 class="col-8 py-2 mb-0">
       {% if posts %}
-
-      {% if request.get_full_path == "/" %}
-      Feed
-      {% else %}
-      My Posts ({{ page_obj.paginator.count }})
-      {% endif %}
-
+        {{ title }}
       {% endif %}
     </h1>
-    <div class="btn-group col py-2 mt-2" role="group">
+    <div class="btn-group col py-2 mt-2 mb-1" role="group">
       <a type="button" class="btn btn-primary" href="{% url 'ticket-new' %}">Request Review</a>
       <a type="button" class="btn btn-success" href="{% url 'review-new' %}">Write Review</a>
     </div>
@@ -24,66 +18,35 @@
 
 {% if posts %}
 
+{% include 'reviews/_pagination.html' %}
+
 {% for post in posts %}
 
-{% if post.content_type == 'REVIEW' %}
-{% include 'reviews/review_snippet.html' %}
-{% elif post.content_type == 'TICKET' %}
-{% include 'reviews/ticket_snippet.html' %}
-{% endif %}
+  {% if post.content_type == 'REVIEW' %}
+    {% include 'reviews/review_snippet.html' %}
+  {% elif post.content_type == 'TICKET' %}
+    {% include 'reviews/ticket_snippet.html' %}
+  {% endif %}
 
 {% endfor %}
 
 {% else %}
 
-{% if request.get_full_path == "/" %}
+
 <div class="card text-center">
   <div class="card-body">
     <h5 class="card-title">No posts to display</h5>
+    {% if request.get_full_path == "/" %}
     <p class="card-text">Write or request a review, or subscribe to a user to view their posts.</p>
     <a type="button" class="btn btn-success" href="{% url 'reviews-subs' %}">View Subscriptions</a>
-  </div>
-</div>
-
-{% else %}
-<div class="card text-center">
-  <div class="card-body">
-    <h5 class="card-title">No posts to display</h5>
+    {% else %}
     <p class="card-text">You have not written any posts yet. Write or request a review to get started.</p>
+    {% endif %}
   </div>
 </div>
 
 {% endif %}
 
-
-{% endif %}
-
-{% if is_paginated %}
-
-<nav class="page-nav mb-5 mr-2">
-  <ul class="pagination justify-content-end">
-
-    {% if page_obj.has_previous %}
-    <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
-    <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
-    {% endif %}
-
-    {% for num in page_obj.paginator.page_range %}
-    {% if page_obj.number == num %}
-    <li class="page-item active"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-    {% endif %}
-    {% endfor %}
-
-    {% if page_obj.has_next %}
-    <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-    <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
-    {% endif %}
-
-  </ul>
-</nav>
-
-{% endif %}
+{% include 'reviews/_pagination.html' %}
 
 {% endblock content %}

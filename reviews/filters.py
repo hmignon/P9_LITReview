@@ -3,7 +3,8 @@ from itertools import chain
 from django.contrib.auth.models import User
 from django.db.models import CharField, Value
 
-from reviews.models import Review, Ticket, UserFollow
+from reviews.models import Review, Ticket
+from users.models import UserFollow
 
 
 def get_users_viewable_reviews(user: User):

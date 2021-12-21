@@ -1,7 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.views.generic import DeleteView
+
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from .models import UserFollow
 
 
 def register(request):
@@ -40,3 +44,28 @@ def profile(request):
     }
 
     return render(request, 'users/profile.html', context)
+
+
+@login_required
+def subscriptions(request):
+    user_follows = UserFollow.objects.filter(user=request.user)
+    followed_by = UserFollow.objects.filter(followed_user=request.user)
+
+    context = {
+        'user_follows': user_follows,
+        'followed_by': followed_by,
+        'title': 'Subscriptions',
+    }
+
+    return render(request, 'users/subscriptions.html', context)
+
+
+class UnsubscribeView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = UserFollow
+    success_url = 'subscriptions/'
+
+    def test_func(self):
+        post = self.get_object()
+        if self.request.user == post.user:
+            return True
+        return False

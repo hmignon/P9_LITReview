@@ -1,4 +1,3 @@
-# TODO image not saving ticket and review (new and update)
 # TODO review in response to ticket
 
 from itertools import chain
@@ -20,7 +19,7 @@ from .filters import (
     get_followed_tickets
 )
 from .forms import NewReviewForm, NewTicketForm
-from .models import Review, Ticket, UserFollow
+from .models import Review, Ticket
 
 
 @login_required
@@ -35,16 +34,15 @@ def feed(request):
         get_followed_tickets(request.user)
     )
 
-    posts = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
+    posts_list = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
 
-    paginator = Paginator(posts, 5)
+    paginator = Paginator(posts_list, 5)
     page = request.GET.get('page')
-    page_obj = paginator.get_page(page)
+    posts = paginator.get_page(page)
 
     context = {
         'posts': posts,
         'title': 'Feed',
-        'page_obj': page_obj
     }
 
     return render(request, 'reviews/feed.html', context)
@@ -55,16 +53,15 @@ def my_posts(request):
     reviews = get_users_viewable_reviews(request.user)
     tickets = get_users_viewable_tickets(request.user)
 
-    posts = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
+    posts_list = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
 
-    paginator = Paginator(posts, 5)
+    paginator = Paginator(posts_list, 5)
     page = request.GET.get('page')
-    page_obj = paginator.get_page(page)
+    posts = paginator.get_page(page)
 
     context = {
         'posts': posts,
-        'title': 'My Posts',
-        'page_obj': page_obj
+        'title': f'My Posts ({paginator.count})',
     }
 
     return render(request, 'reviews/feed.html', context)
@@ -148,23 +145,6 @@ class TicketDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Ticket
     success_url = '/'
     context_object_name = 'post'
-
-    def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.user:
-            return True
-        return False
-
-
-# Subscriptions #
-@login_required
-def subscriptions(request):
-    return render(request, 'reviews/subscriptions.html', {'title': 'Subscriptions'})
-
-
-class UnsubscribeView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
-    model = UserFollow
-    success_url = 'subscriptions/'
 
     def test_func(self):
         post = self.get_object()
