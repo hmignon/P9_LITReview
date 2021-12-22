@@ -1,10 +1,10 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.shortcuts import render, redirect
 from django.views.generic import DeleteView
 
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
+from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, SubscribeForm
 from .models import UserFollow
 
 
@@ -40,7 +40,8 @@ def profile(request):
 
     context = {
         'u_form': u_form,
-        'p_form': p_form
+        'p_form': p_form,
+        'title': 'Profile'
     }
 
     return render(request, 'users/profile.html', context)
@@ -48,10 +49,26 @@ def profile(request):
 
 @login_required
 def subscriptions(request):
+    if request.method == 'POST':
+        form = SubscribeForm(request.POST, instance=request.user)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'You have subscribed to')
+            return redirect('reviews-subs')
+
+        else:
+            messages.error(request, 'User not found')
+            return redirect('reviews-subs')
+
+    else:
+        form = SubscribeForm(instance=request.user)
+
     user_follows = UserFollow.objects.filter(user=request.user)
     followed_by = UserFollow.objects.filter(followed_user=request.user)
 
     context = {
+        'form': form,
         'user_follows': user_follows,
         'followed_by': followed_by,
         'title': 'Subscriptions',
@@ -62,10 +79,11 @@ def subscriptions(request):
 
 class UnsubscribeView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = UserFollow
-    success_url = 'subscriptions/'
+    success_url = '/subscriptions'
+    context_object_name = 'unsub'
 
     def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.user:
+        unsub = self.get_object()
+        if self.request.user == unsub.user:
             return True
         return False

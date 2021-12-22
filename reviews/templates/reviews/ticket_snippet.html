@@ -1,4 +1,4 @@
-<article class="media content-section" style="background:#f5f5f5">
+<article class="media content-section">
   <img class="rounded-circle article-img" src="{{ post.user.profile.image.url }}">
   <div class="media-body">
     <div class="article-metadata">
@@ -8,7 +8,7 @@
       {% endif %}
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
       {% if post.user == user %}
-        <a class="btn btn-outline-secondary btn-sm mt-1 mb-1" href="{% url 'ticket-update' post.id %}">Update</a>
+        <a class="btn btn-outline-secondary btn-sm mt-1 mb-1 ml-3" href="{% url 'ticket-update' post.id %}">Update</a>
         <a class="btn btn-outline-danger btn-sm mt-1 mb-1" href="{% url 'ticket-delete' post.id %}">Delete</a>
       {% endif %}
     </div>
@@ -19,8 +19,8 @@
       <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.image.url }}" alt="{{ post.title }}"> {% endif %}
       <p class="article-content text-justify mt-3 mr-3">{{ post.description }}</p>
     </div>
-    <div class="btn float-right mt-2">
-      <a type="button" class="btn btn-success btn-sm" href="#">Write Review</a>
+    <div class="btn float-right mt-0">
+      <a type="button" class="btn btn-success btn-sm" href="#">Write Review in response to {{ post.user }}</a>
     </div>
   </div>
 </article>

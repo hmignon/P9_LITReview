@@ -37,10 +37,15 @@
   <div class="card-body">
     <h5 class="card-title">No posts to display</h5>
     {% if request.get_full_path == "/" %}
-    <p class="card-text">Write or request a review, or subscribe to a user to view their posts.</p>
+    <p class="card-text">
+      <a href="{% url 'review-new' %}">Write</a> or <a href="{% url 'review-new' %}">request</a> a review, or subscribe to a user to view their posts.
+    </p>
     <a type="button" class="btn btn-success" href="{% url 'reviews-subs' %}">View Subscriptions</a>
     {% else %}
-    <p class="card-text">You have not written any posts yet. Write or request a review to get started.</p>
+    <p class="card-text">
+      You have not written any posts yet.
+      <a href="{% url 'review-new' %}">Write</a> or <a href="{% url 'review-new' %}">request</a> a review to get started.
+    </p>
     {% endif %}
   </div>
 </div>

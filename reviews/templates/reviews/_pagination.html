@@ -1,3 +1,5 @@
+{% if posts.paginator.num_pages > 1 %}
+
 <nav class="page-nav mb-3">
   <ul class="pagination justify-content-end">
 
@@ -21,3 +23,5 @@
 
   </ul>
 </nav>
+
+{% endif %}

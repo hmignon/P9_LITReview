@@ -1,4 +1,4 @@
-from .models import Profile
+from .models import Profile, UserFollow
 
 from django import forms
 from django.contrib.auth.models import User
@@ -26,3 +26,11 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['image']
+
+
+class SubscribeForm(forms.ModelForm):
+    followed_user = forms.CharField(label='Enter username')
+
+    class Meta:
+        model = UserFollow
+        fields = ['followed_user']

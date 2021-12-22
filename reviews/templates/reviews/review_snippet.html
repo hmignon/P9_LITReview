@@ -9,7 +9,7 @@
       {% endif %}
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
       {% if post.user == user %}
-        <a class="btn btn-outline-secondary btn-sm mt-1 mb-1" href="{% url 'review-update' post.id %}">Update</a>
+        <a class="btn btn-outline-secondary btn-sm mt-1 mb-1 ml-3" href="{% url 'review-update' post.id %}">Update</a>
         <a class="btn btn-outline-danger btn-sm mt-1 mb-1" href="{% url 'review-delete' post.id %}">Delete</a>
       {% endif %}
     </div>
@@ -24,7 +24,7 @@
       </p>
     </h2>
     {% if post.ticket %}
-      <i>In response to {{ post.ticket.title }} by {{ post.ticket.user }}</i>
+    <strong class="text-success">In response to "{{ post.ticket.title }}" by <i>{{ post.ticket.user }}</i></strong>
     {% endif %}
     <div class="review-body">
       {% if post.image %}

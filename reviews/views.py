@@ -1,7 +1,3 @@
-# TODO review in response to ticket
-
-from itertools import chain
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
@@ -12,11 +8,12 @@ from django.views.generic import (
     DeleteView
 )
 
-from .filters import (
-    get_users_viewable_reviews,
-    get_followed_reviews,
-    get_users_viewable_tickets,
-    get_followed_tickets
+from .utils import (
+    sort_posts,
+    get_user_reviews,
+    get_user_tickets,
+    get_user_viewable_reviews,
+    get_user_viewable_tickets
 )
 from .forms import NewReviewForm, NewTicketForm
 from .models import Review, Ticket
@@ -24,21 +21,17 @@ from .models import Review, Ticket
 
 @login_required
 def feed(request):
-    reviews = chain(
-        get_users_viewable_reviews(request.user),
-        get_followed_reviews(request.user)
+    posts_list = sort_posts(
+        get_user_viewable_reviews(request.user),
+        get_user_viewable_tickets(request.user)
     )
 
-    tickets = chain(
-        get_users_viewable_tickets(request.user),
-        get_followed_tickets(request.user)
-    )
-
-    posts_list = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
-
-    paginator = Paginator(posts_list, 5)
-    page = request.GET.get('page')
-    posts = paginator.get_page(page)
+    if posts_list:
+        paginator = Paginator(posts_list, 5)
+        page = request.GET.get('page')
+        posts = paginator.get_page(page)
+    else:
+        posts = None
 
     context = {
         'posts': posts,
@@ -50,18 +43,23 @@ def feed(request):
 
 @login_required
 def my_posts(request):
-    reviews = get_users_viewable_reviews(request.user)
-    tickets = get_users_viewable_tickets(request.user)
+    posts_list = sort_posts(
+        get_user_reviews(request.user),
+        get_user_tickets(request.user)
+    )
 
-    posts_list = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
-
-    paginator = Paginator(posts_list, 5)
-    page = request.GET.get('page')
-    posts = paginator.get_page(page)
+    if posts_list:
+        paginator = Paginator(posts_list, 5)
+        page = request.GET.get('page')
+        posts = paginator.get_page(page)
+        total_posts = paginator.count
+    else:
+        posts = None
+        total_posts = 0
 
     context = {
         'posts': posts,
-        'title': f'My Posts ({paginator.count})',
+        'title': f'My Posts ({total_posts})',
     }
 
     return render(request, 'reviews/feed.html', context)

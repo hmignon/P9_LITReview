@@ -15,7 +15,7 @@ class Ticket(models.Model):
     image = models.ImageField(blank=True, null=True, upload_to='reviews_img')
 
     def __str__(self):
-        return self.title
+        return f'Ticket-{self.id} ({self.title})'
 
     if image is True:
         def save(self, *args, **kwargs):
@@ -43,7 +43,7 @@ class Review(models.Model):
     image = models.ImageField(blank=True, null=True, upload_to='reviews_img')
 
     def __str__(self):
-        return self.headline
+        return f'Review-{self.id} ({self.headline})'
 
     if image is True:
         def save(self, *args, **kwargs):

@@ -12,10 +12,8 @@
         New Review
       {% elif request.get_full_path == "/ticket/new/" %}
         New Ticket
-      {% elif review %}
-        Edit "{{ review.headline }}"
-      {% elif ticket %}
-        Edit "{{ ticket.title }}"
+      {% else %}
+        Edit "{{ review.headline }}{{ ticket.title }}"
       {% endif %}
       </legend>
       {{ form|crispy }}

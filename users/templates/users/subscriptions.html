@@ -1,4 +1,5 @@
 {% extends "reviews/_base.html" %}
+{% load crispy_forms_tags %}
 {% block content %}
 
 <div class="container">
@@ -10,14 +11,10 @@
 <div class="content-section">
   <h4 class="mb-3 mt-2">Subscribe to a user</h4>
   <fieldset class="form-group mt-3">
-    <form class="form-group" method="POST">
+    <form class="form-group" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
-      <div class="input-group mb-3">
-        <input type="text" class="form-control" placeholder="Enter username here">
-        <div class="input-group-append">
-          <button class="btn btn-success" type="submit" id="button-addon2">Subscribe</button>
-        </div>
-      </div>
+      {{ form|crispy }}
+      <button class="btn btn-success float-right" type="submit">Subscribe</button>
     </form>
   </fieldset>
 
@@ -28,9 +25,10 @@
         {% for follow in user_follows %}
       <li class="list-group-item">
         <p class="mb-0">
-          <img class="rounded-circle article-img" src="{{ follow.followed_user.profile.image.url }}" style="height:50px; width:50px">
+          <img class="rounded-circle article-img" src="{{ follow.followed_user.profile.image.url }}"
+               style="height:50px; width:50px">
           {{ follow.followed_user.username }}
-            <a class="btn btn-outline-danger btn-sm float-right mt-2" href="{% url 'confirm-unsub' %}">Unsubscribe</a>
+            <a class="btn btn-outline-danger btn-sm float-right mt-2" href="{% url 'confirm-unsub' follow.id %}">Unsubscribe</a>
         </p>
       </li>
       {% endfor %}
