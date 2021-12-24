@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
 from django.db.models import Value, CharField
 from django.shortcuts import render, redirect
-from django.views.generic import DeleteView
+from django.views.generic import DeleteView, DetailView
 
 from .forms import NewReviewForm, NewTicketForm
 from .models import Review, Ticket
@@ -35,6 +35,7 @@ def feed(request):
 
     context = {
         'posts': posts,
+        'r_tickets': [],
         'title': 'Feed',
     }
 
@@ -48,6 +49,18 @@ def my_posts(request):
 
     tickets = Ticket.objects.filter(user=request.user)
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    replied_tickets = []
+    replied_reviews = []
+    for ticket in tickets:
+        try:
+            replied = Review.objects.get(ticket=ticket)
+            if replied:
+                replied_tickets.append(replied.ticket)
+                replied_reviews.append(replied)
+
+        except Review.DoesNotExist:
+            pass
 
     posts_list = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
 
@@ -63,6 +76,8 @@ def my_posts(request):
     context = {
         'posts': posts,
         'title': f'My Posts ({total_posts})',
+        'r_tickets': replied_tickets,
+        'r_reviews': replied_reviews
     }
 
     return render(request, 'reviews/feed.html', context)
@@ -160,6 +175,11 @@ def review_update(request, pk):
     return render(request, 'reviews/review_form.html', context)
 
 
+class ReviewDetailView(LoginRequiredMixin, DetailView):
+    model = Review
+    context_object_name = 'post'
+
+
 class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Review
     success_url = '/'
@@ -179,7 +199,13 @@ def ticket_new(request):
         form = NewTicketForm(request.POST, request.FILES)
 
         if form.is_valid():
-            form.save()
+            image = request.FILES.get('image', None)
+            Ticket.objects.create(
+                user=request.user,
+                title=request.POST['title'],
+                description=request.POST['description'],
+                image=image
+            )
             messages.success(request, 'Your ticket has been saved!')
             return redirect('reviews-feed')
 

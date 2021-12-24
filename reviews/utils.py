@@ -30,4 +30,10 @@ def get_user_viewable_tickets(user: User):
     for follow in user_follows:
         followers.append(follow.followed_user)
 
-    return Ticket.objects.filter(user__in=followers)
+    tickets = Ticket.objects.filter(user__in=followers)
+    for ticket in tickets:
+        replied = Review.objects.filter(ticket=ticket)
+        if replied:
+            tickets = tickets.exclude(id=ticket.id)
+
+    return tickets

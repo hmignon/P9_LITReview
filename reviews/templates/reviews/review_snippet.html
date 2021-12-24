@@ -5,8 +5,8 @@
       <p class="mr-2" style="display: inline; color: #333333">{{ post.user }}</p>
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
       {% if post.user == user %}
-        <a class="btn btn-outline-secondary btn-sm mt-1 mb-1 ml-3" href="{% url 'review-update' post.id %}">Update</a>
-        <a class="btn btn-outline-danger btn-sm mt-1 mb-1" href="{% url 'review-delete' post.id %}">Delete</a>
+        <a class="ml-3" href="{% url 'review-update' post.id %}">Edit</a>
+        <a class="ml-2" href="{% url 'review-delete' post.id %}" style="color:#dc3545">Delete</a>
       {% endif %}
     </div>
     <h6 class="mb-0"><span class="badge badge-success">Review</span></h6>
@@ -28,6 +28,10 @@
         <div class="article-metadata">
           <p class="mr-2 mb-0" style="display: inline">{{ post.ticket.user }}</p>
           <small class="text-muted">{{ post.ticket.time_created|date:"H:i, F d, Y" }}</small>
+          {% if post.ticket.user == user %}
+            <a class="ml-3" href="{% url 'ticket-update' post.ticket.id %}">Edit</a>
+            <a class="ml-2" href="{% url 'ticket-delete' post.ticket.id %}" style="color:#dc3545">Delete</a>
+          {% endif %}
         </div>
         <h6 class="mb-0"><span class="badge badge-primary">Ticket</span></h6>
         <h2 class="mt-0">{{ post.ticket.title }}</h2>

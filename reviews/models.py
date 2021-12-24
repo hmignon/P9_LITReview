@@ -17,7 +17,7 @@ class Ticket(models.Model):
     def __str__(self):
         return f'Ticket-{self.title}'
 
-    if image:
+    if image is True:
         def save(self, *args, **kwargs):
             super().save()
 
