@@ -42,7 +42,7 @@
         <!-- Navbar Right Side -->
         <div class="navbar-nav">
           {% if user.is_authenticated %}
-          <span class="navbar-text mr-2">Welcome back, {{ user.username }}!</span>
+          <span class="navbar-text mr-4"><strong>Welcome back, {{ user.username }}!</strong></span>
           <a class="nav-item nav-link" href="{% url 'profile' %}">View Profile</a>
           <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
           {% else %}

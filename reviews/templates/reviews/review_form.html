@@ -1,0 +1,51 @@
+{% extends "reviews/_base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="container">
+  <div class="mb-3">
+    <h1 class="mb-0">{{ title }}</h1>
+  </div>
+</div>
+
+<div class="content-section">
+  <form method="POST" enctype='multipart/form-data'>
+    {% csrf_token %}
+
+    <fieldset class="form-group">
+      {% if request.get_full_path == "/review/new/" %}
+      <h3 class="border-bottom mb-4">Book / Article</h3>
+      {{ t_form|crispy }}
+
+      {% else %}
+      <h3 class="mb-4">Replying to :</h3>
+      <article class="media ml-4 mr-4">
+        <div class="media-body">
+          <div class="article-metadata">
+            <p class="mr-2 mb-0" style="display: inline">{{ post.user }}</p>
+            <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
+          </div>
+          <h6 class="mb-0"><span class="badge badge-primary">Ticket</span></h6>
+          <h2 class="mt-0">{{ post.title }}</h2>
+          <div class="ticket-description">
+            {% if post.image %}
+            <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.image.url }}" alt="{{ post.title }}">
+            {% endif %}
+            <p class="article-content text-justify mt-3 mr-3">{{ post.description }}</p>
+          </div>
+        </div>
+      </article>
+      {% endif %}
+
+      <hr class="mb-4">
+      <h3 class="border-bottom mb-4">Review</h3>
+      {{ r_form|crispy }}
+      <div class="float-right mt-3">
+        <a class="btn btn-link" href="{% url 'reviews-feed' %}">Cancel</a>
+        <button class="btn btn-success" type="submit">Post</button>
+      </div>
+    </fieldset>
+  </form>
+</div>
+
+{% endblock content %}

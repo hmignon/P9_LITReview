@@ -1,6 +1,8 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
+from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views.generic import DeleteView
 
@@ -50,19 +52,25 @@ def profile(request):
 @login_required
 def subscriptions(request):
     if request.method == 'POST':
-        form = SubscribeForm(request.POST, instance=request.user)
+        form = SubscribeForm(request.POST)
 
         if form.is_valid():
-            form.save()
-            messages.success(request, f'You have subscribed to')
-            return redirect('reviews-subs')
+            try:
+                followed_user = User.objects.get(username=request.POST['followed_user'])
+                if request.user == followed_user:
+                    messages.error(request, 'You can\'t subscribe to yourself!')
+                else:
+                    try:
+                        UserFollow.objects.create(user=request.user, followed_user=followed_user)
+                        messages.success(request, f'You are now following {followed_user}!')
+                    except IntegrityError:
+                        messages.error(request, f'You are already following {followed_user}!')
 
-        else:
-            messages.error(request, 'User not found')
-            return redirect('reviews-subs')
+            except User.DoesNotExist:
+                messages.error(request, f'The user {form.data["followed_user"]} does not exist.')
 
     else:
-        form = SubscribeForm(instance=request.user)
+        form = SubscribeForm()
 
     user_follows = UserFollow.objects.filter(user=request.user)
     followed_by = UserFollow.objects.filter(followed_user=request.user)

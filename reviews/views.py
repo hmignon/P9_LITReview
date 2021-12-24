@@ -1,30 +1,30 @@
+from itertools import chain
+
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.paginator import Paginator
-from django.shortcuts import render
-from django.views.generic import (
-    CreateView,
-    UpdateView,
-    DeleteView
-)
+from django.db.models import Value, CharField
+from django.shortcuts import render, redirect
+from django.views.generic import DeleteView
 
+from .forms import NewReviewForm, NewTicketForm
+from .models import Review, Ticket
 from .utils import (
-    sort_posts,
-    get_user_reviews,
-    get_user_tickets,
     get_user_viewable_reviews,
     get_user_viewable_tickets
 )
-from .forms import NewReviewForm, NewTicketForm
-from .models import Review, Ticket
 
 
 @login_required
 def feed(request):
-    posts_list = sort_posts(
-        get_user_viewable_reviews(request.user),
-        get_user_viewable_tickets(request.user)
-    )
+    reviews = get_user_viewable_reviews(request.user)
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    tickets = get_user_viewable_tickets(request.user)
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    posts_list = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
 
     if posts_list:
         paginator = Paginator(posts_list, 5)
@@ -43,10 +43,13 @@ def feed(request):
 
 @login_required
 def my_posts(request):
-    posts_list = sort_posts(
-        get_user_reviews(request.user),
-        get_user_tickets(request.user)
-    )
+    reviews = Review.objects.filter(user=request.user)
+    reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
+
+    tickets = Ticket.objects.filter(user=request.user)
+    tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
+
+    posts_list = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
 
     if posts_list:
         paginator = Paginator(posts_list, 5)
@@ -65,35 +68,96 @@ def my_posts(request):
     return render(request, 'reviews/feed.html', context)
 
 
-# Reviews #
-class ReviewNewView(LoginRequiredMixin, CreateView):
-    model = Review
-    template_name = 'reviews/post_form.html'
-    form_class = NewReviewForm
-    success_url = '/'
-    context_object_name = 'post'
+# Reviews
+@login_required
+def review_new(request):
+    if request.method == 'POST':
+        t_form = NewTicketForm(request.POST, request.FILES)
+        r_form = NewReviewForm(request.POST)
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+        if t_form.is_valid() and r_form.is_valid():
+            t = Ticket.objects.create(
+                user=request.user,
+                title=request.POST['title'],
+                description=request.POST['description'],
+                image=request.FILES['image']
+            )
+            t.save()
+            Review.objects.create(
+                ticket=t,
+                user=request.user,
+                headline=request.POST['headline'],
+                rating=request.POST['rating'],
+                body=request.POST['body']
+            )
+            messages.success(request, f'Your review has been saved!')
+            return redirect('reviews-feed')
+
+    else:
+        t_form = NewTicketForm()
+        r_form = NewReviewForm()
+
+    context = {
+        't_form': t_form,
+        'r_form': r_form,
+        'title': 'New Review'
+    }
+
+    return render(request, 'reviews/review_form.html', context)
 
 
-class ReviewUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Review
-    template_name = 'reviews/post_form.html'
-    form_class = NewReviewForm
-    success_url = '/'
-    context_object_name = 'review'
+@login_required
+def review_response(request, pk):
+    ticket = Ticket.objects.get(id=pk)
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+    if request.method == 'POST':
+        r_form = NewReviewForm(request.POST)
 
-    def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.user:
-            return True
-        return False
+        if r_form.is_valid():
+            Review.objects.create(
+                ticket=ticket,
+                user=request.user,
+                headline=request.POST['headline'],
+                rating=request.POST['rating'],
+                body=request.POST['body']
+            )
+            messages.success(request, 'Your response has been saved!')
+            return redirect('reviews-feed')
+
+    else:
+        r_form = NewReviewForm()
+
+    context = {
+        'r_form': r_form,
+        'post': ticket,
+        'title': 'Response Review'
+    }
+
+    return render(request, 'reviews/review_form.html', context)
+
+
+@login_required
+def review_update(request, pk):
+    review = Review.objects.get(id=pk)
+
+    if request.method == 'POST':
+        r_form = NewReviewForm(request.POST, instance=review)
+
+        if r_form.is_valid():
+            r_form.save()
+            messages.success(request, f'Your review has been updated!')
+            return redirect('reviews-feed')
+
+    else:
+        r_form = NewReviewForm(instance=review)
+
+    context = {
+        'r_form': r_form,
+        'post': review.ticket,
+        'title': 'Update Review'
+    }
+
+    return render(request, 'reviews/review_form.html', context)
 
 
 class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -108,35 +172,49 @@ class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return False
 
 
-# Tickets #
-class TicketNewView(LoginRequiredMixin, CreateView):
-    model = Ticket
-    template_name = 'reviews/post_form.html'
-    form_class = NewTicketForm
-    success_url = '/'
-    context_object_name = 'post'
+# Tickets
+@login_required
+def ticket_new(request):
+    if request.method == 'POST':
+        form = NewTicketForm(request.POST, request.FILES)
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your ticket has been saved!')
+            return redirect('reviews-feed')
+
+    else:
+        form = NewTicketForm()
+
+    context = {
+        'form': form,
+        'title': 'New Ticket'
+    }
+
+    return render(request, 'reviews/ticket_form.html', context)
 
 
-class TicketUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = Ticket
-    template_name = 'reviews/post_form.html'
-    form_class = NewTicketForm
-    success_url = '/'
-    context_object_name = 'ticket'
+@login_required
+def ticket_update(request, pk):
+    ticket = Ticket.objects.get(id=pk)
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+    if request.method == 'POST':
+        form = NewTicketForm(request.POST, request.FILES, instance=ticket)
 
-    def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.user:
-            return True
-        return False
+        if form.is_valid():
+            form.save()
+            messages.success(request, f'Your ticket has been updated!')
+            return redirect('reviews-feed')
+
+    else:
+        form = NewTicketForm(instance=ticket)
+
+    context = {
+        'form': form,
+        'title': 'Update Ticket'
+    }
+
+    return render(request, 'reviews/ticket_form.html', context)
 
 
 class TicketDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

@@ -2,10 +2,7 @@
   <img class="rounded-circle article-img" src="{{ post.user.profile.image.url }}">
   <div class="media-body">
     <div class="article-metadata">
-      {% if post.user == user %}
-      <a class="mr-2" href="{% url 'user-posts' %}">{{ post.user }}</a> {% else %}
       <p class="mr-2 mb-0" style="display: inline">{{ post.user }}</p>
-      {% endif %}
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
       {% if post.user == user %}
         <a class="btn btn-outline-secondary btn-sm mt-1 mb-1 ml-3" href="{% url 'ticket-update' post.id %}">Update</a>
@@ -20,7 +17,7 @@
       <p class="article-content text-justify mt-3 mr-3">{{ post.description }}</p>
     </div>
     <div class="btn float-right mt-0">
-      <a type="button" class="btn btn-success btn-sm" href="#">Write Review in response to {{ post.user }}</a>
+      <a type="button" class="btn btn-success btn-sm" href="{% url 'response-review' post.id %}">Write Review in response to {{ post.user }}</a>
     </div>
   </div>
 </article>

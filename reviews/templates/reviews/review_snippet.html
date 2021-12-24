@@ -2,11 +2,7 @@
   <img class="rounded-circle article-img" src="{{ post.user.profile.image.url }}">
   <div class="media-body">
     <div class="article-metadata">
-      {% if post.user == user %}
-      <a class="mr-2" href="{% url 'user-posts' %}">{{ post.user }}</a>
-      {% else %}
       <p class="mr-2" style="display: inline; color: #333333">{{ post.user }}</p>
-      {% endif %}
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
       {% if post.user == user %}
         <a class="btn btn-outline-secondary btn-sm mt-1 mb-1 ml-3" href="{% url 'review-update' post.id %}">Update</a>
@@ -23,15 +19,25 @@
         <i class="bi bi-star-fill"></i>
       </p>
     </h2>
-    {% if post.ticket %}
-    <strong class="text-success">In response to "{{ post.ticket.title }}" by <i>{{ post.ticket.user }}</i></strong>
-    {% endif %}
     <div class="review-body">
-      {% if post.image %}
-      <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.image.url }}"
-           alt="{{ post.headline }}">
-      {% endif %}
       <p class="article-content text-justify mt-3 mr-3">{{ post.body }}</p>
     </div>
+    <article class="media content-section">
+      <img class="rounded-circle article-img" src="{{ post.ticket.user.profile.image.url }}" style="height:45px; width:45px">
+      <div class="media-body">
+        <div class="article-metadata">
+          <p class="mr-2 mb-0" style="display: inline">{{ post.ticket.user }}</p>
+          <small class="text-muted">{{ post.ticket.time_created|date:"H:i, F d, Y" }}</small>
+        </div>
+        <h6 class="mb-0"><span class="badge badge-primary">Ticket</span></h6>
+        <h2 class="mt-0">{{ post.ticket.title }}</h2>
+        <div class="ticket-description">
+          {% if post.ticket.image %}
+          <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}">
+          {% endif %}
+          <p class="article-content text-justify mt-3 mr-3">{{ post.ticket.description }}</p>
+        </div>
+      </div>
+    </article>
   </div>
 </article>
