@@ -18,40 +18,40 @@
 
 {% if posts %}
 
-{% include 'reviews/_pagination.html' %}
+  {% include 'reviews/_pagination.html' %}
 
-{% for post in posts %}
+  {% for post in posts %}
 
-  {% if post.content_type == 'REVIEW' %}
-    {% include 'reviews/review_snippet.html' %}
-  {% elif post.content_type == 'TICKET' %}
-    {% include 'reviews/ticket_snippet.html' %}
-  {% endif %}
+    {% if post.content_type == 'REVIEW' %}
+      {% include 'reviews/review_snippet.html' %}
+    {% elif post.content_type == 'TICKET' %}
+      {% include 'reviews/ticket_snippet.html' %}
+    {% endif %}
 
-{% endfor %}
+  {% endfor %}
+
+  {% include 'reviews/_pagination.html' %}
 
 {% else %}
 
-
+<!-- No posts to display -->
 <div class="card text-center">
   <div class="card-body">
     <h5 class="card-title">No posts to display</h5>
     {% if request.get_full_path == "/" %}
-    <p class="card-text">
-      <a href="{% url 'review-new' %}">Write</a> or <a href="{% url 'review-new' %}">request</a> a review, or subscribe to a user to view their posts.
-    </p>
-    <a type="button" class="btn btn-success" href="{% url 'reviews-subs' %}">View Subscriptions</a>
+      <p class="card-text">
+        <a href="{% url 'review-new' %}">Write</a> or
+        <a href="{% url 'review-new' %}">request</a> a review, or subscribe to a user to view their posts.
+      </p>
+      <a type="button" class="btn btn-success" href="{% url 'reviews-subs' %}">View Subscriptions</a>
     {% else %}
-    <p class="card-text">
-      You have not written any posts yet.
-      <a href="{% url 'review-new' %}">Write</a> or <a href="{% url 'review-new' %}">request</a> a review to get started.
-    </p>
+      <p class="card-text">You have not written any posts yet. <a href="{% url 'review-new' %}">Write</a> or
+        <a href="{% url 'review-new' %}">request</a> a review to get started.
+      </p>
     {% endif %}
   </div>
 </div>
 
 {% endif %}
-
-{% include 'reviews/_pagination.html' %}
 
 {% endblock content %}

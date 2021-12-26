@@ -3,21 +3,26 @@ from itertools import chain
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Value, CharField
 from django.shortcuts import render, redirect
-from django.views.generic import DeleteView, DetailView
+from django.views.generic import DeleteView
 
 from .forms import NewReviewForm, NewTicketForm
 from .models import Review, Ticket
 from .utils import (
     get_user_viewable_reviews,
-    get_user_viewable_tickets
+    get_user_viewable_tickets,
+    get_replied_tickets,
+    get_user_follows,
 )
 
 
 @login_required
 def feed(request):
+    followed_users = get_user_follows(request.user)
+
     reviews = get_user_viewable_reviews(request.user)
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
@@ -37,30 +42,28 @@ def feed(request):
         'posts': posts,
         'r_tickets': [],
         'title': 'Feed',
+        'followed_users': followed_users
     }
 
     return render(request, 'reviews/feed.html', context)
 
 
 @login_required
-def my_posts(request):
-    reviews = Review.objects.filter(user=request.user)
+def user_posts(request, pk=None):
+    if pk:
+        user = User.objects.get(id=pk)
+    else:
+        user = request.user
+
+    followed_users = get_user_follows(request.user)
+
+    reviews = Review.objects.filter(user=user)
     reviews = reviews.annotate(content_type=Value('REVIEW', CharField()))
 
-    tickets = Ticket.objects.filter(user=request.user)
+    tickets = Ticket.objects.filter(user=user)
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
-    replied_tickets = []
-    replied_reviews = []
-    for ticket in tickets:
-        try:
-            replied = Review.objects.get(ticket=ticket)
-            if replied:
-                replied_tickets.append(replied.ticket)
-                replied_reviews.append(replied)
-
-        except Review.DoesNotExist:
-            pass
+    replied_tickets, replied_reviews = get_replied_tickets(tickets)
 
     posts_list = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
 
@@ -75,9 +78,10 @@ def my_posts(request):
 
     context = {
         'posts': posts,
-        'title': f'My Posts ({total_posts})',
+        'title': f"{user.username}'s posts ({total_posts})",
         'r_tickets': replied_tickets,
-        'r_reviews': replied_reviews
+        'r_reviews': replied_reviews,
+        'followed_users': followed_users
     }
 
     return render(request, 'reviews/feed.html', context)
@@ -175,9 +179,19 @@ def review_update(request, pk):
     return render(request, 'reviews/review_form.html', context)
 
 
-class ReviewDetailView(LoginRequiredMixin, DetailView):
-    model = Review
-    context_object_name = 'post'
+@login_required
+def review_detail(request, pk):
+    review = Review.objects.get(id=pk)
+    user = review.user
+    followed_users = get_user_follows(user)
+
+    context = {
+        'post': review,
+        'title': 'Review detail',
+        'followed_users': followed_users
+    }
+
+    return render(request, 'reviews/post_detail.html', context)
 
 
 class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
@@ -241,6 +255,25 @@ def ticket_update(request, pk):
     }
 
     return render(request, 'reviews/ticket_form.html', context)
+
+
+@login_required
+def ticket_detail(request, pk):
+    ticket = Ticket.objects.get(id=pk)
+    user = ticket.user
+    followed_users = get_user_follows(user)
+
+    replied_tickets, replied_reviews = get_replied_tickets([ticket])
+
+    context = {
+        'post': ticket,
+        'title': 'Ticket detail',
+        'r_tickets': replied_tickets,
+        'r_reviews': replied_reviews,
+        'followed_users': followed_users,
+    }
+
+    return render(request, 'reviews/post_detail.html', context)
 
 
 class TicketDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):

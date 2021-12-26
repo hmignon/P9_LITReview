@@ -1,6 +1,10 @@
-from .models import Review, Ticket
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field
+from crispy_forms.bootstrap import InlineRadios
 
 from django import forms
+
+from .models import Review, Ticket
 
 
 class NewReviewForm(forms.ModelForm):
@@ -29,6 +33,14 @@ class NewReviewForm(forms.ModelForm):
     class Meta:
         model = Review
         fields = ['headline', 'rating', 'body']
+
+    helper = FormHelper()
+    helper.form_class = 'form-group'
+    helper.layout = Layout(
+        Field('headline'),
+        InlineRadios('rating'),
+        Field('body', rows="10"),
+    )
 
 
 class NewTicketForm(forms.ModelForm):

@@ -1,16 +1,38 @@
 <article class="media content-section">
-  <img class="rounded-circle article-img" src="{{ post.user.profile.image.url }}">
+  <img class="rounded-circle article-img" src="{{ post.user.profile.image.url }}"
+       alt="{{ post.user.username }} profile picture">
   <div class="media-body">
     <div class="article-metadata">
-      <p class="mr-2" style="display: inline; color: #333333">{{ post.user }}</p>
-      <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
-      {% if post.user == user %}
-        <a class="ml-3" href="{% url 'review-update' post.id %}">Edit</a>
-        <a class="ml-2" href="{% url 'review-delete' post.id %}" style="color:#dc3545">Delete</a>
+
+      {% if post.user != user %}
+
+        {% if post.user in followed_users %}
+          <a class="mr-2 mb-0" href="{% url 'user-posts' post.user.id %}">{{ post.user }}</a>
+        {% else %}
+          <p class="mr-2 mb-0" style="display:inline">{{ post.user }}</p>
+        {% endif %}
+
+      {% else %}
+        <a class="mr-2 mb-0" href="{% url 'my-posts' %}">{{ post.user }}</a>
       {% endif %}
+
+      <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
+
+      {% if post.user == user %}
+        <a class="ml-3 text-primary" href="{% url 'review-update' post.id %}">Edit</a>
+        <a class="ml-2 text-danger" href="{% url 'review-delete' post.id %}">Delete</a>
+      {% elif post.user not in followed_users %}
+        <div class="ml-3 text-muted" style="display:inline">
+          <i>You are not subscribed to {{ post.user }}</i>
+          <a class="ml-2 text-success" href="{% url 'reviews-subs' %}">View subscriptions</a>
+        </div>
+      {% endif %}
+
     </div>
+
     <h6 class="mb-0"><span class="badge badge-success">Review</span></h6>
-    <h2 class="mt-0">{{ post.headline }} -
+    <h2 class="mt-0">
+      <a class="text-dark" href="{% url 'review-detail' post.id %}">{{ post.headline }}</a> -
       <p class="star-rating-{{ post.rating }}" style="font-size: 22px; color: #cccccc; display:inline">
         <i class="bi bi-star-fill"></i>
         <i class="bi bi-star-fill"></i>
@@ -19,29 +41,53 @@
         <i class="bi bi-star-fill"></i>
       </p>
     </h2>
+
     <div class="review-body">
       <p class="article-content text-justify mt-3 mr-3">{{ post.body }}</p>
     </div>
-    <article class="media content-section">
-      <img class="rounded-circle article-img" src="{{ post.ticket.user.profile.image.url }}" style="height:45px; width:45px">
+
+    <!-- Ticket section -->
+    <h5 class="mt-4"><i>In response to :</i></h5>
+    <article class="media content-section mr-3">
       <div class="media-body">
         <div class="article-metadata">
-          <p class="mr-2 mb-0" style="display: inline">{{ post.ticket.user }}</p>
+          {% if post.ticket.user != user %}
+            {% if post.ticket.user in followed_users %}
+              <a class="mr-2 mb-0" href="{% url 'user-posts' post.ticket.user.id %}">{{ post.ticket.user }}</a>
+            {% else %}
+              <p class="mr-2 mb-0" style="display:inline">{{ post.ticket.user }}</p>
+            {% endif %}
+          {% else %}
+            <a class="mr-2 mb-0" href="{% url 'my-posts' %}">{{ post.ticket.user }}</a>
+          {% endif %}
+
           <small class="text-muted">{{ post.ticket.time_created|date:"H:i, F d, Y" }}</small>
+
           {% if post.ticket.user == user %}
-            <a class="ml-3" href="{% url 'ticket-update' post.ticket.id %}">Edit</a>
-            <a class="ml-2" href="{% url 'ticket-delete' post.ticket.id %}" style="color:#dc3545">Delete</a>
+            <a class="ml-3 text-primary" href="{% url 'ticket-update' post.ticket.id %}">Edit</a>
+            <a class="ml-2 text-danger" href="{% url 'ticket-delete' post.ticket.id %}">Delete</a>
+          {% elif post.ticket.user not in followed_users %}
+            <div class="ml-3 text-muted" style="display:inline">
+              You are not subscribed to {{ post.ticket.user }}
+              <a class="ml-2 text-success" href="{% url 'reviews-subs' %}">View subscriptions</a>
+            </div>
           {% endif %}
+
         </div>
-        <h6 class="mb-0"><span class="badge badge-primary">Ticket</span></h6>
-        <h2 class="mt-0">{{ post.ticket.title }}</h2>
+        <h3 class="mt-0">
+          <a class="text-dark" href="{% url 'ticket-detail' post.ticket.id %}">{{ post.ticket.title }}</a>
+        </h3>
         <div class="ticket-description">
+
           {% if post.ticket.image %}
-          <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.ticket.image.url }}" alt="{{ post.ticket.title }}">
+            <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.ticket.image.url }}"
+                 alt="{{ post.ticket.title }}">
           {% endif %}
+
           <p class="article-content text-justify mt-3 mr-3">{{ post.ticket.description }}</p>
         </div>
       </div>
     </article>
+
   </div>
 </article>

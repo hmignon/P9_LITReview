@@ -6,76 +6,82 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+  <link rel="icon" href="{% static 'reviews/img/favicon.png' %}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-  <link rel="stylesheet" type="text/css" href="{% static 'reviews/css/main.css' %}?version=1">
+  <link rel="stylesheet" type="text/css" href="{% static 'reviews/css/main.css' %}?version=2">
 
   {% if title %}
-  <title>LITReview - {{ title }}</title>
+    <title>LITReview - {{ title }}</title>
   {% else %}
-  <title>LITReview</title>
+    <title>LITReview</title>
   {% endif %}
-
 </head>
 
 <body>
-<header class="site-header">
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <div class="container">
-      <a class="navbar-brand mr-4" href="{% url 'reviews-feed' %}">
-        <img src="{% static 'reviews/img/logo_w.png' %}" width="30" height="30" alt="LITReview logo">
-        LITReview
-      </a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
-              aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation"><span
-          class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarToggle">
-        <div class="navbar-nav mr-auto">
-          {% if user.is_authenticated %}
-          <a class="nav-item nav-link" href="{% url 'reviews-feed' %}">Feed</a>
-          <a class="nav-item nav-link" href="{% url 'user-posts' %}">My Posts</a>
-          <a class="nav-item nav-link" href="{% url 'reviews-subs' %}">Subscriptions</a>
-          {% endif %}
-        </div>
-        <!-- Navbar Right Side -->
-        <div class="navbar-nav">
-          {% if user.is_authenticated %}
-          <span class="navbar-text mr-4"><strong>Welcome back, {{ user.username }}!</strong></span>
-          <a class="nav-item nav-link" href="{% url 'profile' %}">View Profile</a>
-          <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
-          {% else %}
-          <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
-          <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-          {% endif %}
+  <header class="site-header">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand mr-4" href="{% url 'reviews-feed' %}">
+          <img src="{% static 'reviews/img/logo_w.png' %}" width="30" height="30" alt="LITReview logo">
+          LITReview
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle"
+                aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation"><span
+            class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggle">
+
+          <!-- Navbar Left Side -->
+          <div class="navbar-nav mr-auto">
+            {% if user.is_authenticated %}
+              <a class="nav-item nav-link" href="{% url 'reviews-feed' %}">Feed</a>
+              <a class="nav-item nav-link" href="{% url 'my-posts' %}">My Posts</a>
+              <a class="nav-item nav-link" href="{% url 'reviews-subs' %}">Subscriptions</a>
+            {% endif %}
+          </div>
+
+          <!-- Navbar Right Side -->
+          <div class="navbar-nav">
+            {% if user.is_authenticated %}
+              <span class="navbar-text mr-4"><strong>Welcome back, {{ user.username }}!</strong></span>
+              <a class="nav-item nav-link" href="{% url 'profile' %}">View Profile</a>
+              <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+              <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+              <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+            {% endif %}
+          </div>
         </div>
       </div>
-    </div>
-  </nav>
-</header>
+    </nav>
+  </header>
 
-<main role="main" class="container">
-  <div class="row">
-    <div class="col-lg">
-      {% if messages %}
-      {% for message in messages %}
-      <div class="alert alert-{{ message.tags }}">
-        {{ message }}
+   <!-- Messages -->
+  <main role="main" class="container">
+    <div class="row">
+      <div class="col-lg">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+
+        <!-- Block Content -->
+        {% block content %}{% endblock %}
       </div>
-      {% endfor %}
-      {% endif %}
-      {% block content %}{% endblock %}
     </div>
-  </div>
-</main>
+  </main>
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
-        crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+          integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+          crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-fQybjgWLrvvRgtW6bFlB7jaZrFsaBXjsOMm/tB9LTS58ONXgqbR9W8oWht/amnpF"
+          crossorigin="anonymous"></script>
 </body>
 
 </html>

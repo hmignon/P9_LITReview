@@ -1,0 +1,16 @@
+{% extends "reviews/_base.html" %}
+{% block content %}
+
+<div class="container">
+  <div class="row mb-2">
+    <h1 class="col-8 py-2 mb-0">{{ title }}</h1>
+  </div>
+</div>
+
+{% if title == 'Ticket detail' %}
+  {% include 'reviews/ticket_snippet.html' %}
+{% elif title == 'Review detail' %}
+  {% include 'reviews/review_snippet.html' %}
+{% endif %}
+
+{% endblock content %}

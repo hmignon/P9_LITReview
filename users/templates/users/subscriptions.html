@@ -3,16 +3,19 @@
 {% block content %}
 
 <div class="container">
-  <div class="mb-3">
-    <h1 class="mb-0">Subscriptions</h1>
+  <div class="row mb-2">
+    <h1 class="col-8 py-2 mb-0">Subscriptions</h1>
   </div>
 </div>
 
 <div class="content-section">
+
+  <!-- Subscription form -->
   <h4 class="mb-3 mt-2">Subscribe to a user</h4>
   <fieldset class="form-group mt-3">
     <form class="input-group mb-3" method="POST">
       {% csrf_token %}
+      <label for="followed_user" style="display:none"></label>
       <input class="form-control" id="followed_user" type="text" name="followed_user" placeholder="Enter username">
       <div class="input-group-append">
         <button class="btn btn-success" id="button-addon2" type="submit">Subscribe</button>
@@ -20,39 +23,64 @@
     </form>
   </fieldset>
 
-  {% if user_follows %}
-  <h4 class="mb-3">Followed users ({{ user_follows.count }})</h4>
-  <div class="card mb-5">
-    <ul class="list-group list-group-flush">
-        {% for follow in user_follows %}
-      <li class="list-group-item">
-        <p class="mb-0">
-          <img class="rounded-circle article-img" src="{{ follow.followed_user.profile.image.url }}"
-               style="height:50px; width:50px">
-          {{ follow.followed_user.username }}
-            <a class="btn btn-outline-danger btn-sm float-right mt-2" href="{% url 'confirm-unsub' follow.id %}">Unsubscribe</a>
-        </p>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
+  <div class="row">
+  <!-- Following -->
+    <div class="col">
+      <h4 class="mb-3">Followed users ({{ user_follows.count }})</h4>
+      {% if user_follows %}
+        <div class="card mb-5">
+          <ul class="list-group list-group-flush">
+            {% for follow in user_follows %}
+              <li class="list-group-item">
+                <p class="mb-0">
+                  <img class="rounded-circle article-img" src="{{ follow.followed_user.profile.image.url }}"
+                       style="height:50px; width:50px" alt="{{ follow.followed_user.username }} profile picture">
+                  {{ follow.followed_user.username }}
+                  <a class="btn btn-outline-danger btn-sm float-right mt-2" href="{% url 'confirm-unsub' follow.id %}">
+                    Unsubscribe
+                  </a>
+                </p>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% elif not user_follows %}
+        <div class="card text-center mb-5">
+          <div class="card-body">
+            <h5 class="card-title">You are not subscribed to anyone.</h5>
+            <p class="card-text">Follow other users to view their posts!</p>
+          </div>
+        </div>
+      {% endif %}
+    </div>
 
-  {% if followed_by %}
-  <h4 class="mb-3">Users following you ({{ followed_by.count }})</h4>
-  <div class="card mb-4">
-    <ul class="list-group list-group-flush">
-      {% for follow in followed_by %}
-      <li class="list-group-item">
-        <p class="mb-0">
-          <img class="rounded-circle article-img" src="{{ follow.user.profile.image.url }}" style="height:50px; width:50px">
-          {{ follow.user.username }}
-        </p>
-      </li>
-      {% endfor %}
-    </ul>
+  <!-- Followers -->
+    <div class="col">
+      <h4 class="mb-3">Users following you ({{ followed_by.count }})</h4>
+      {% if followed_by %}
+        <div class="card mb-4">
+          <ul class="list-group list-group-flush">
+            {% for follow in followed_by %}
+              <li class="list-group-item">
+                <p class="mb-0">
+                  <img class="rounded-circle article-img" src="{{ follow.user.profile.image.url }}"
+                       style="height:50px; width:50px" alt="{{ follow.user.username }} profile picture">
+                  {{ follow.user.username }}
+                </p>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% elif not followed_by %}
+        <div class="card text-center mb-5">
+          <div class="card-body">
+            <h5 class="card-title">No one is following you.</h5>
+            <p class="card-text">Follow other users, or reply to review requests to get started!</p>
+          </div>
+        </div>
+      {% endif %}
+    </div>
   </div>
-  {% endif %}
 
 </div>
 

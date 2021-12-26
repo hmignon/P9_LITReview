@@ -3,8 +3,8 @@
 {% block content %}
 
 <div class="container">
-  <div class="mb-3">
-    <h1 class="mb-0">{{ title }}</h1>
+  <div class="row mb-2">
+    <h1 class="col-8 py-2 mb-0">{{ title }}</h1>
   </div>
 </div>
 
@@ -14,14 +14,13 @@
 
     <fieldset class="form-group">
       <h3 class="border-bottom mb-4">Book / Article</h3>
-
       {{ form|crispy }}
-
       <div class="float-right mt-3">
         <a class="btn btn-link" href="{% url 'reviews-feed' %}">Cancel</a>
         <button class="btn btn-success" type="submit">Post</button>
       </div>
     </fieldset>
+
   </form>
 </div>
 

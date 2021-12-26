@@ -1,7 +1,8 @@
+from PIL import Image, ImageOps
+
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
-from PIL import Image, ImageOps
 
 
 class Profile(models.Model):
