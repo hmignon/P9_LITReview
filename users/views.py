@@ -72,8 +72,8 @@ def subscriptions(request):
     else:
         form = SubscribeForm()
 
-    user_follows = UserFollow.objects.filter(user=request.user)
-    followed_by = UserFollow.objects.filter(followed_user=request.user)
+    user_follows = UserFollow.objects.filter(user=request.user).order_by('followed_user')
+    followed_by = UserFollow.objects.filter(followed_user=request.user).order_by('user')
 
     context = {
         'form': form,

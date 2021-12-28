@@ -51,20 +51,20 @@ ul {
 }
 
 .star-rating-2 i:first-child,
-.star-rating-2 i:first-child+i {
+.star-rating-2 i:first-child + i {
     color: #ffc107;
 }
 
 .star-rating-3 i:first-child,
-.star-rating-3 i:first-child+i,
-.star-rating-3 i:first-child+i+i {
+.star-rating-3 i:first-child + i,
+.star-rating-3 i:first-child + i + i {
     color: #ffc107;
 }
 
 .star-rating-4 i:first-child,
-.star-rating-4 i:first-child+i,
-.star-rating-4 i:first-child+i+i,
-.star-rating-4 i:first-child+i+i+i {
+.star-rating-4 i:first-child + i,
+.star-rating-4 i:first-child + i + i,
+.star-rating-4 i:first-child + i + i + i {
     color: #ffc107;
 }
 

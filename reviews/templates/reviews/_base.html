@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
         integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-  <link rel="stylesheet" type="text/css" href="{% static 'reviews/css/main.css' %}?version=2">
+  <link rel="stylesheet" type="text/css" href="{% static 'reviews/css/main.css' %}?version=1">
 
   {% if title %}
     <title>LITReview - {{ title }}</title>
@@ -45,7 +45,7 @@
           <!-- Navbar Right Side -->
           <div class="navbar-nav">
             {% if user.is_authenticated %}
-              <span class="navbar-text mr-4"><strong>Welcome back, {{ user.username }}!</strong></span>
+              <span class="navbar-text mr-3"><strong>Welcome back, {{ user.username }} !</strong></span>
               <a class="nav-item nav-link" href="{% url 'profile' %}">View Profile</a>
               <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
             {% else %}

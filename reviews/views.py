@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Value, CharField
 from django.shortcuts import render, redirect
+from django.utils.datastructures import MultiValueDictKeyError
 from django.views.generic import DeleteView
 
 from .forms import NewReviewForm, NewTicketForm
@@ -95,11 +96,16 @@ def review_new(request):
         r_form = NewReviewForm(request.POST)
 
         if t_form.is_valid() and r_form.is_valid():
+            try:
+                image = request.FILES['image']
+            except MultiValueDictKeyError:
+                image = None
+
             t = Ticket.objects.create(
                 user=request.user,
                 title=request.POST['title'],
                 description=request.POST['description'],
-                image=request.FILES['image']
+                image=image
             )
             t.save()
             Review.objects.create(

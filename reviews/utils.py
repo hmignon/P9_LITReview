@@ -11,7 +11,7 @@ def get_user_viewable_reviews(user: User):
     Reviews to current user tickets if review author is not followed
 
     @param user: currently logged-in User instance
-    @return: filtered reviews queryset with no duplicated results
+    @return: filtered reviews queryset with no duplicate results
     """
     user_follows = UserFollow.objects.filter(user=user)
     followers = [user]
@@ -82,6 +82,7 @@ def get_replied_tickets(tickets):
 
 
 def get_user_follows(user):
+    """Returns list of users followed by current user"""
     follows = UserFollow.objects.filter(user=user)
     followed_users = []
     for follow in follows:

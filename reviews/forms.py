@@ -11,17 +11,13 @@ class NewReviewForm(forms.ModelForm):
     headline = forms.CharField(
         label="Title",
         max_length=128,
-        widget=forms.TextInput(),
-        required=True,
-        error_messages={'required': 'Please enter a title.'}
+        widget=forms.TextInput()
     )
     rating = forms.ChoiceField(
         initial=1,
         label="Rating",
         widget=forms.RadioSelect(),
-        choices=((1, "1 star"), (2, "2 stars"), (3, "3 stars"), (4, "4 stars"), (5, '5 stars')),
-        required=True,
-        error_messages={'required': 'Please enter a rating.'}
+        choices=((1, "1 star"), (2, "2 stars"), (3, "3 stars"), (4, "4 stars"), (5, '5 stars'))
     )
     body = forms.CharField(
         label="Review",
@@ -34,11 +30,12 @@ class NewReviewForm(forms.ModelForm):
         model = Review
         fields = ['headline', 'rating', 'body']
 
+    # Crispy forms layout helper
     helper = FormHelper()
     helper.form_class = 'form-group'
     helper.layout = Layout(
         Field('headline'),
-        InlineRadios('rating'),
+        InlineRadios('rating', style="display: flex; justify-content: space-around;"),
         Field('body', rows="10"),
     )
 
@@ -47,8 +44,7 @@ class NewTicketForm(forms.ModelForm):
     title = forms.CharField(
         label="Title",
         max_length=128,
-        widget=forms.TextInput(),
-        error_messages={'required': 'Please enter a title.'}
+        widget=forms.TextInput()
     )
     description = forms.CharField(
         label="Description",

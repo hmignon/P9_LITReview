@@ -1,8 +1,9 @@
 <article class="media content-section">
+
   <img class="rounded-circle article-img" src="{{ post.user.profile.image.url }}"
        alt="{{ post.user.username }} profile picture">
-  <div class="media-body">
 
+  <div class="media-body">
     <div class="article-metadata">
 
       {% if post.user != user %}
@@ -20,8 +21,8 @@
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
 
       {% if post.user == user %}
-        <a class="ml-3 text-primary" href="{% url 'review-update' post.id %}">Edit</a>
-        <a class="ml-2 text-danger" href="{% url 'review-delete' post.id %}">Delete</a>
+        <a class="ml-3 text-primary" href="{% url 'ticket-update' post.id %}">Edit</a>
+        <a class="ml-2 text-danger" href="{% url 'ticket-delete' post.id %}">Delete</a>
       {% endif %}
 
     </div>

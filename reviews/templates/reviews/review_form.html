@@ -14,12 +14,12 @@
 
     <fieldset class="form-group">
       {% if request.get_full_path == "/review/new/" %}
-        <h3 class="border-bottom mb-4">Book / Article</h3>
+        <h3 class="mb-4">Book / Article</h3>
         {{ t_form|crispy }}
 
       {% else %}
       <!-- Ticket for response review -->
-        <h3 class="mb-4">Replying to :</h3>
+        <h4 class="mb-4">Replying to :</h4>
         <article class="media ml-4 mr-4">
           <div class="media-body">
             <div class="article-metadata">
@@ -39,7 +39,7 @@
       {% endif %}
 
       <hr class="mb-4">
-      <h3 class="border-bottom mb-4">Review</h3>
+      <h3 class="mb-4">Your Review :</h3>
       {% crispy r_form %}
       <div class="float-right mt-3">
         <a class="btn btn-link" href="{% url 'reviews-feed' %}">Cancel</a>
