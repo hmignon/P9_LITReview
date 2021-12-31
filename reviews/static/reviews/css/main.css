@@ -72,6 +72,10 @@ ul {
     color: #ffc107;
 }
 
+.img-thumbnail {
+    height: 150px;
+}
+
 /* Profile */
 .account-img {
     height: 125px;

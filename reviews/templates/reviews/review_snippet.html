@@ -26,7 +26,7 @@
       {% elif post.user not in followed_users %}
         <div class="ml-3 text-muted" style="display:inline">
           <i>You are not subscribed to {{ post.user }}</i>
-          <a class="ml-2 text-success" href="{% url 'reviews-subs' %}">View subscriptions</a>
+          <a class="ml-2 text-success" href="{% url 'subscriptions' %}">View subscriptions</a>
         </div>
       {% endif %}
 
@@ -71,7 +71,7 @@
           {% elif post.ticket.user not in followed_users %}
             <div class="ml-3 text-muted" style="display:inline">
               You are not subscribed to {{ post.ticket.user }}
-              <a class="ml-2 text-success" href="{% url 'reviews-subs' %}">View subscriptions</a>
+              <a class="ml-2 text-success" href="{% url 'subscriptions' %}">View subscriptions</a>
             </div>
           {% endif %}
 
@@ -82,7 +82,7 @@
         <div class="ticket-description">
 
           {% if post.ticket.image %}
-            <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.ticket.image.url }}"
+            <img class="img-thumbnail float-left mb-1 mr-3" src="{{ post.ticket.image.url }}"
                  alt="{{ post.ticket.title }}">
           {% endif %}
 

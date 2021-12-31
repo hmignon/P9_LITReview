@@ -6,7 +6,12 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 from django.views.generic import DeleteView
 
-from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm, SubscribeForm
+from .forms import (
+    UserRegisterForm,
+    UserUpdateForm,
+    ProfileUpdateForm,
+    SubscribeForm,
+)
 from .models import UserFollow
 
 

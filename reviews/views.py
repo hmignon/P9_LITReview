@@ -115,7 +115,7 @@ def review_new(request):
                 rating=request.POST['rating'],
                 body=request.POST['body']
             )
-            messages.success(request, f'Your review has been saved!')
+            messages.success(request, f'Your review has been posted!')
             return redirect('reviews-feed')
 
     else:
@@ -146,7 +146,7 @@ def review_response(request, pk):
                 rating=request.POST['rating'],
                 body=request.POST['body']
             )
-            messages.success(request, 'Your response has been saved!')
+            messages.success(request, 'Your response to "{{ ticket.title }}" has been posted!')
             return redirect('reviews-feed')
 
     else:
@@ -226,7 +226,7 @@ def ticket_new(request):
                 description=request.POST['description'],
                 image=image
             )
-            messages.success(request, 'Your ticket has been saved!')
+            messages.success(request, 'Your ticket has been posted!')
             return redirect('reviews-feed')
 
     else:

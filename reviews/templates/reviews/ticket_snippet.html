@@ -31,7 +31,7 @@
     <div class="ticket-description">
 
       {% if post.image %}
-        <img class="img-thumbnail float-left mb-1 mr-3" style="height:150px" src="{{ post.image.url }}"
+        <img class="img-thumbnail float-left mb-1 mr-3" src="{{ post.image.url }}"
              alt="{{ post.title }}">
       {% endif %}
 
@@ -50,7 +50,7 @@
       {% endfor %}
 
     {% elif post not in r_tickets %}
-      <div class="btn float-right mt-0">
+      <div class="btn float-right">
         <a type="button" class="btn btn-success btn-sm" href="{% url 'response-review' post.id %}">
           Write Review in response to {{ post.user }}
         </a>

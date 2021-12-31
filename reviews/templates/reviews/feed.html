@@ -43,7 +43,7 @@
         <a href="{% url 'review-new' %}">Write</a> or
         <a href="{% url 'review-new' %}">request</a> a review, or subscribe to a user to view their posts.
       </p>
-      <a type="button" class="btn btn-success" href="{% url 'reviews-subs' %}">View Subscriptions</a>
+      <a type="button" class="btn btn-success" href="{% url 'subscriptions' %}">View Subscriptions</a>
     {% else %}
       <p class="card-text">You have not written any posts yet. <a href="{% url 'review-new' %}">Write</a> or
         <a href="{% url 'review-new' %}">request</a> a review to get started.
