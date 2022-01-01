@@ -146,7 +146,7 @@ def review_response(request, pk):
                 rating=request.POST['rating'],
                 body=request.POST['body']
             )
-            messages.success(request, 'Your response to "{{ ticket.title }}" has been posted!')
+            messages.success(request, f'Your response to "{ticket.title}" has been posted!')
             return redirect('reviews-feed')
 
     else:

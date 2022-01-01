@@ -7,34 +7,35 @@ _Testé sous Windows 10 - Python 3.9.5 - Django 3.2.9_
 ## Initialisation du projet
 
 ### Windows :
+```
+git clone https://github.com/hmignon/P9_mignon_helene.git
 
-    git clone https://github.com/hmignon/P9_mignon_helene.git
+cd P9_mignon_helene 
+python -m venv env 
+env\Scripts\activate
 
-    cd P9_mignon_helene 
-    python -m venv env 
-    env\Scripts\activate
-
-    pip install -r requirements.txt
+pip install -r requirements.txt
+```
 
 
 ### MacOS et Linux :
+```
+git clone https://github.com/hmignon/P9_mignon_helene.git
 
-    git clone https://github.com/hmignon/P9_mignon_helene.git
+cd P9_mignon_helene 
+python3 -m venv env 
+source env/bin/activate
 
-    cd P9_mignon_helene 
-    python3 -m venv env 
-    source env/bin/activate
-
-    pip install -r requirements.txt
-
+pip install -r requirements.txt
+```
 
 ## Utilisation
 
 1. Lancer le serveur Django:
 
-
-    python manage.py runserver
-
+```
+python manage.py runserver
+```
 
 2. Dans le navigateur de votre choix, se rendre à l'adresse http://127.0.0.1:8000/
 
@@ -45,7 +46,7 @@ _Testé sous Windows 10 - Python 3.9.5 - Django 3.2.9_
 
 Identifiant : **Admin** | Mot de passe : **litreview**
 
---> http://127.0.0.1:8000/admin/
+&rarr; http://127.0.0.1:8000/admin/
 
 ### Liste des utilisateurs existants
 
