@@ -9,13 +9,13 @@
       {% if post.user != user %}
 
         {% if post.user in followed_users %}
-          <a href="{% url 'user-posts' post.user.id %}">{{ post.user }}</a>
+          <a class="mr-2 mb-0" href="{% url 'user-posts' post.user.id %}">{{ post.user }}</a>
         {% else %}
-          <p>{{ post.user }}</p>
+          <p class="mr-2 mb-0" style="display:inline">{{ post.user }}</p>
         {% endif %}
 
       {% else %}
-        <a href="{% url 'my-posts' %}">{{ post.user }}</a>
+        <a class="mr-2 mb-0" href="{% url 'my-posts' %}">{{ post.user }}</a>
       {% endif %}
 
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
@@ -23,6 +23,11 @@
       {% if post.user == user %}
         <a class="ml-3 text-primary" href="{% url 'ticket-update' post.id %}">Edit</a>
         <a class="ml-2 text-danger" href="{% url 'ticket-delete' post.id %}">Delete</a>
+      {% elif post.user not in followed_users %}
+        <div class="ml-3 text-muted" style="display:inline">
+          <i>You are not subscribed to {{ post.user }}</i>
+          <a class="ml-2 text-success" href="{% url 'subscriptions' %}">View subscriptions</a>
+        </div>
       {% endif %}
 
     </div>
@@ -41,9 +46,13 @@
     {% if r_tickets and post in r_tickets %}
       {% for reply in r_reviews %}
         {% if post == reply.ticket %}
-          <div class="btn float-right mt-0">
+          <div class="btn float-right">
             <a class="btn btn-outline-success btn-sm" href="{% url 'review-detail' reply.id %}">
-              View response from {{ reply.user }}
+              {% if reply.user == user %}
+                View your response
+              {% else %}
+                View response from {{ reply.user }}
+              {% endif %}
             </a>
           </div>
         {% endif %}
@@ -52,7 +61,11 @@
     {% elif post not in r_tickets %}
       <div class="btn float-right">
         <a type="button" class="btn btn-success btn-sm" href="{% url 'response-review' post.id %}">
-          Write Review in response to {{ post.user }}
+          {% if post.user == user %}
+            Reply to your Ticket
+          {% else %}
+            Write Review in response to {{ post.user }}
+          {% endif %}
         </a>
       </div>
     {% endif %}

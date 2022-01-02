@@ -188,8 +188,7 @@ def review_update(request, pk):
 @login_required
 def review_detail(request, pk):
     review = Review.objects.get(id=pk)
-    user = review.user
-    followed_users = get_user_follows(user)
+    followed_users = get_user_follows(request.user)
 
     context = {
         'post': review,
@@ -266,8 +265,7 @@ def ticket_update(request, pk):
 @login_required
 def ticket_detail(request, pk):
     ticket = Ticket.objects.get(id=pk)
-    user = ticket.user
-    followed_users = get_user_follows(user)
+    followed_users = get_user_follows(request.user)
 
     replied_tickets, replied_reviews = get_replied_tickets([ticket])
 

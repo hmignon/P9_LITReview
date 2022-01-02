@@ -35,7 +35,7 @@
     <h6 class="mb-0"><span class="badge badge-success">Review</span></h6>
     <h2 class="mt-0">
       <a class="text-dark" href="{% url 'review-detail' post.id %}">{{ post.headline }}</a> -
-      <p class="star-rating-{{ post.rating }}" style="font-size: 22px; color: #cccccc; display:inline">
+      <p class="star-rating-{{ post.rating }}" id="stars">
         <i class="bi bi-star-fill"></i>
         <i class="bi bi-star-fill"></i>
         <i class="bi bi-star-fill"></i>
@@ -49,8 +49,7 @@
     </div>
 
     <!-- Ticket section -->
-    <h5 class="mt-4"><i>In response to :</i></h5>
-    <article class="media content-section mr-3">
+    <article class="media content-section mr-3 mt-4" id="replied-ticket">
       <div class="media-body">
         <div class="article-metadata">
           {% if post.ticket.user != user %}
@@ -76,6 +75,7 @@
           {% endif %}
 
         </div>
+        <h6 class="mb-0"><span class="badge badge-primary">Ticket</span></h6>
         <h3 class="mt-0">
           <a class="text-dark" href="{% url 'ticket-detail' post.ticket.id %}">{{ post.ticket.title }}</a>
         </h3>

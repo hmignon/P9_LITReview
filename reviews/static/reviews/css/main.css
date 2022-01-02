@@ -30,6 +30,10 @@ ul {
     margin-bottom: 20px;
 }
 
+#replied-ticket {
+    background: #fafafa;
+}
+
 .article-content {
     white-space: pre-line;
 }
@@ -44,6 +48,12 @@ ul {
     padding-bottom: 1px;
     margin-bottom: 4px;
     border-bottom: 1px solid #e3e3e3
+}
+
+#stars {
+    font-size: 22px;
+    color: #cccccc;
+    display:inline;
 }
 
 .star-rating-1 i:first-child {
