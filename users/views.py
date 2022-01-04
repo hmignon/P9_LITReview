@@ -100,3 +100,7 @@ class UnsubscribeView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         if self.request.user == unsub.user:
             return True
         return False
+
+    def delete(self, request, *args, **kwargs):
+        messages.warning(self.request, f'You have stopped following {self.get_object().followed_user}.')
+        return super(UnsubscribeView, self).delete(request, *args, **kwargs)

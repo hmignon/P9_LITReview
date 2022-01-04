@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.db.models import Value, CharField
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.generic import DeleteView
 
@@ -20,6 +20,7 @@ from .utils import (
 )
 
 
+# -------- Feeds --------
 @login_required
 def feed(request):
     followed_users = get_user_follows(request.user)
@@ -52,7 +53,7 @@ def feed(request):
 @login_required
 def user_posts(request, pk=None):
     if pk:
-        user = User.objects.get(id=pk)
+        user = get_object_or_404(User, id=pk)
     else:
         user = request.user
 
@@ -88,7 +89,7 @@ def user_posts(request, pk=None):
     return render(request, 'reviews/feed.html', context)
 
 
-# Reviews
+# -------- Reviews --------
 @login_required
 def review_new(request):
     if request.method == 'POST':
@@ -133,7 +134,7 @@ def review_new(request):
 
 @login_required
 def review_response(request, pk):
-    ticket = Ticket.objects.get(id=pk)
+    ticket = get_object_or_404(Ticket, id=pk)
 
     if request.method == 'POST':
         r_form = NewReviewForm(request.POST)
@@ -163,7 +164,7 @@ def review_response(request, pk):
 
 @login_required
 def review_update(request, pk):
-    review = Review.objects.get(id=pk)
+    review = get_object_or_404(Review, id=pk)
 
     if request.method == 'POST':
         r_form = NewReviewForm(request.POST, instance=review)
@@ -187,7 +188,7 @@ def review_update(request, pk):
 
 @login_required
 def review_detail(request, pk):
-    review = Review.objects.get(id=pk)
+    review = get_object_or_404(Review, id=pk)
     followed_users = get_user_follows(request.user)
 
     context = {
@@ -205,13 +206,17 @@ class ReviewDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     context_object_name = 'post'
 
     def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.user:
+        review = self.get_object()
+        if self.request.user == review.user:
             return True
         return False
 
+    def delete(self, request, *args, **kwargs):
+        messages.warning(self.request, f'Your review "{self.get_object().headline}" has been deleted.')
+        return super(ReviewDeleteView, self).delete(request, *args, **kwargs)
 
-# Tickets
+
+# -------- Tickets --------
 @login_required
 def ticket_new(request):
     if request.method == 'POST':
@@ -241,7 +246,7 @@ def ticket_new(request):
 
 @login_required
 def ticket_update(request, pk):
-    ticket = Ticket.objects.get(id=pk)
+    ticket = get_object_or_404(Ticket, id=pk)
 
     if request.method == 'POST':
         form = NewTicketForm(request.POST, request.FILES, instance=ticket)
@@ -264,7 +269,7 @@ def ticket_update(request, pk):
 
 @login_required
 def ticket_detail(request, pk):
-    ticket = Ticket.objects.get(id=pk)
+    ticket = get_object_or_404(Ticket, id=pk)
     followed_users = get_user_follows(request.user)
 
     replied_tickets, replied_reviews = get_replied_tickets([ticket])
@@ -286,7 +291,11 @@ class TicketDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     context_object_name = 'post'
 
     def test_func(self):
-        post = self.get_object()
-        if self.request.user == post.user:
+        ticket = self.get_object()
+        if self.request.user == ticket.user:
             return True
         return False
+
+    def delete(self, request, *args, **kwargs):
+        messages.warning(self.request, f'Your ticket "{self.get_object().title}" has been deleted.')
+        return super(TicketDeleteView, self).delete(request, *args, **kwargs)

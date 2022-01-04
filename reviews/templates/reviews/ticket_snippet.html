@@ -21,7 +21,7 @@
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
 
       {% if post.user == user %}
-        <a class="ml-3 text-primary" href="{% url 'ticket-update' post.id %}">Edit</a>
+        <a class="ml-3 text-primary" href="{% url 'ticket-update' post.id %}">Update</a>
         <a class="ml-2 text-danger" href="{% url 'ticket-delete' post.id %}">Delete</a>
       {% elif post.user not in followed_users %}
         <div class="ml-3 text-muted" style="display:inline">
