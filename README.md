@@ -7,25 +7,44 @@ _Testé sous Windows 10 - Python 3.9.5 - Django 3.2.9_
 ## Initialisation du projet
 
 ### Windows :
+Dans Windows Powershell, naviguer vers le dossier souhaité.
+###### • Récupération du projet
+
 ```
 git clone https://github.com/hmignon/P9_mignon_helene.git
+```
 
+###### • Activer l'environnement virtuel
+
+```
 cd P9_mignon_helene 
 python -m venv env 
 env\Scripts\activate
+```
 
+###### • Installer les paquets requis
+
+```
 pip install -r requirements.txt
 ```
 
 
 ### MacOS et Linux :
+Dans le terminal, naviguer vers le dossier souhaité.
+###### • Récupération du projet
 ```
 git clone https://github.com/hmignon/P9_mignon_helene.git
+```
 
+###### • Activer l'environnement virtuel
+```
 cd P9_mignon_helene 
 python3 -m venv env 
 source env/bin/activate
+```
 
+###### • Installer les paquets requis
+```
 pip install -r requirements.txt
 ```
 
