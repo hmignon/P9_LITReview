@@ -21,6 +21,10 @@ ul {
     color: #ffffff;
 }
 
+.bg-navbar {
+    background-color: #e1d4c6;
+}
+
 /* Posts */
 .content-section {
     background: #ffffff;

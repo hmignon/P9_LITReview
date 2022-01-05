@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
 from django.db.models import Value, CharField
 from django.shortcuts import render, redirect, get_object_or_404
@@ -168,6 +169,8 @@ def review_response(request, pk):
 @login_required
 def review_update(request, pk):
     review = get_object_or_404(Review, id=pk)
+    if review.user != request.user:
+        raise PermissionDenied()
 
     if request.method == 'POST':
         r_form = NewReviewForm(request.POST, instance=review)
@@ -250,6 +253,8 @@ def ticket_new(request):
 @login_required
 def ticket_update(request, pk):
     ticket = get_object_or_404(Ticket, id=pk)
+    if ticket.user != request.user:
+        raise PermissionDenied()
 
     if request.method == 'POST':
         form = NewTicketForm(request.POST, request.FILES, instance=ticket)
