@@ -19,14 +19,11 @@
 
       {% else %}
       <!-- Ticket for response review -->
-        <h4 class="mb-4">Replying to :</h4>
+        <h4 class="mb-4">Replying to {{ post.user }} :</h4>
         <article class="media ml-4 mr-4">
           <div class="media-body">
-            <div class="article-metadata">
-              <p class="mr-2 mb-0" style="display: inline">{{ post.user }}</p>
-              <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
-            </div>
-            <h2 class="mt-0">{{ post.title }}</h2>
+            <h3 class="mt-0 d-inline">{{ post.title }}</h3>
+            <small class="text-muted ml-2">{{ post.time_created|date:"H:i, F d, Y" }}</small>
             <div class="ticket-description">
               {% if post.image %}
                 <img class="img-thumbnail float-left mb-1 mr-3" src="{{ post.image.url }}"

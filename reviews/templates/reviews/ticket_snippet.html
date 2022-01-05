@@ -24,7 +24,7 @@
         <a class="ml-3 text-primary" href="{% url 'ticket-update' post.id %}">Update</a>
         <a class="ml-2 text-danger" href="{% url 'ticket-delete' post.id %}">Delete</a>
       {% elif post.user not in followed_users %}
-        <div class="ml-3 text-muted" style="display:inline">
+        <div class="ml-3 text-muted d-inline">
           <i>You are not subscribed to {{ post.user }}</i>
           <a class="ml-2 text-success" href="{% url 'subscriptions' %}">View subscriptions</a>
         </div>

@@ -31,6 +31,8 @@ def feed(request):
     tickets = get_user_viewable_tickets(request.user)
     tickets = tickets.annotate(content_type=Value('TICKET', CharField()))
 
+    replied_tickets, replied_reviews = get_replied_tickets(tickets)
+
     posts_list = sorted(chain(reviews, tickets), key=lambda post: post.time_created, reverse=True)
 
     if posts_list:
@@ -42,7 +44,8 @@ def feed(request):
 
     context = {
         'posts': posts,
-        'r_tickets': [],
+        'r_tickets': replied_tickets,
+        'r_reviews': replied_reviews,
         'title': 'Feed',
         'followed_users': followed_users
     }
@@ -116,7 +119,7 @@ def review_new(request):
                 rating=request.POST['rating'],
                 body=request.POST['body']
             )
-            messages.success(request, f'Your review has been posted!')
+            messages.success(request, 'Your review has been posted!')
             return redirect('reviews-feed')
 
     else:
@@ -171,7 +174,7 @@ def review_update(request, pk):
 
         if r_form.is_valid():
             r_form.save()
-            messages.success(request, f'Your review has been updated!')
+            messages.success(request, 'Your review has been updated!')
             return redirect('reviews-feed')
 
     else:
@@ -253,7 +256,7 @@ def ticket_update(request, pk):
 
         if form.is_valid():
             form.save()
-            messages.success(request, f'Your ticket has been updated!')
+            messages.success(request, 'Your ticket has been updated!')
             return redirect('reviews-feed')
 
     else:

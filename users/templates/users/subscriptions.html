@@ -15,7 +15,7 @@
   <fieldset class="form-group mt-3">
     <form class="input-group mb-3" method="POST">
       {% csrf_token %}
-      <label for="followed_user" style="display:none"></label>
+      <label class="d-none" for="followed_user"></label>
       <input class="form-control" id="followed_user" type="text" name="followed_user" placeholder="Enter username">
       <div class="input-group-append">
         <button class="btn btn-success" id="button-addon2" type="submit">Subscribe</button>

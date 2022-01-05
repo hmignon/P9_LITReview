@@ -13,13 +13,11 @@ def get_user_viewable_reviews(user: User):
     @param user: currently logged-in User instance
     @return: filtered reviews queryset with no duplicate results
     """
-    user_follows = UserFollow.objects.filter(user=user)
-    followers = [user]
-    for follow in user_follows:
-        followers.append(follow.followed_user)
+    followed_users = get_user_follows(user)
+    followed_users.append(user)
 
     reviews = []
-    all_reviews = Review.objects.filter(user__in=followers).distinct()
+    all_reviews = Review.objects.filter(user__in=followed_users).distinct()
     for review in all_reviews:
         reviews.append(review.id)
 
@@ -38,28 +36,30 @@ def get_user_viewable_tickets(user: User):
     """
     All viewable tickets for user feed:
     Tickets by followed users + current user
-    Filter out tickets with review response
+    Filter out tickets with review response if review author is followed
 
     @param user: currently logged-in User instance
     @return: filtered tickets queryset
     """
-    user_follows = UserFollow.objects.filter(user=user)
-    followers = [user]
-    for follow in user_follows:
-        followers.append(follow.followed_user)
+    followed_users = get_user_follows(user)
+    followed_users.append(user)
 
-    tickets = Ticket.objects.filter(user__in=followers)
+    tickets = Ticket.objects.filter(user__in=followed_users)
     for ticket in tickets:
-        replied = Review.objects.filter(ticket=ticket)
-        if replied:
-            tickets = tickets.exclude(id=ticket.id)
+        try:
+            replied = Review.objects.get(ticket=ticket)
+            if replied and replied.user in followed_users:
+                tickets = tickets.exclude(id=ticket.id)
+
+        except Review.DoesNotExist:
+            pass
 
     return tickets
 
 
 def get_replied_tickets(tickets):
     """
-    Filter out tickets with review response for 'my posts' and 'user posts'
+    Get tickets with review response
     Get corresponding review to link to for detail view
 
     @param tickets: user tickets queryset
