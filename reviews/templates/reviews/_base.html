@@ -21,7 +21,7 @@
 
 <body>
   <header class="site-header">
-    <nav class="navbar navbar-expand-md navbar-light bg-navbar fixed-top">
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
       <div class="container">
         <a class="navbar-brand mr-4" href="{% url 'reviews-feed' %}">
           <img src="{% static 'reviews/img/logo_w.png' %}" width="30" height="30" alt="LITReview logo">
@@ -46,9 +46,9 @@
           <div class="navbar-nav">
             {% if user.is_authenticated %}
               <div class="nav-item dropdown">
-                <a class="nav-item nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
+                <a class="nav-item nav-link text-white" href="#" id="navbarDropdown" role="button" data-toggle="dropdown">
                   Welcome back, {{ user.username }} !
-                  <img class="rounded-circle ml-2" width="28" height="28" src="{{ user.profile.image.url }}"
+                  <img class="rounded-circle ml-2" width="30" height="30" src="{{ user.profile.image.url }}"
                   alt="{{ user.username }} profile picture">
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
