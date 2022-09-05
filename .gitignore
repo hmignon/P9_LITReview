@@ -7,6 +7,8 @@ htmlcov/
 
 # Django stuff:
 db.sqlite3
+media/profile_pics/*
+media/reviews_img/*
 
 # Environments
 .env

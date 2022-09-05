@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 
-from reviews.models import Review, Ticket
-from users.models import UserFollow
+from apps.users.models import UserFollow
+from .models import Review, Ticket
 
 
 def get_user_viewable_reviews(user: User):
