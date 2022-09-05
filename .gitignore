@@ -1,4 +1,19 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
+
+# Unit test / coverage reports
+htmlcov/
+.coverage
+
+# Django stuff:
+db.sqlite3
+
+# Environments
+.env
 env/
+
+# PyCharm
 .idea/
+
+# Misc
 notes.txt
