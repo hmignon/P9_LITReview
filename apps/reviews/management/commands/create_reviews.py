@@ -2,13 +2,13 @@ import uuid
 from random import choice, randint
 
 import requests
-from django.contrib.auth.models import User
 from django.core.management import BaseCommand
 from faker import Faker
 from tqdm import trange
 
 from apps.reviews.models import Ticket, Review
 from apps.reviews.utils import get_replied_tickets
+from apps.users.models import User
 
 
 class Command(BaseCommand):

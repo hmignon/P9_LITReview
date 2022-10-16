@@ -1,25 +1,24 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
 from django.db import IntegrityError
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views.generic import DeleteView
 
-from .forms import (
-    UserRegisterForm,
-    UserUpdateForm,
-    ProfileUpdateForm,
-    SubscribeForm,
-)
-from .models import UserFollow
+from .forms import (SubscribeForm, UserRegisterForm, UserUpdateForm)
+from .models import User, UserFollow
 
 
 def register(request):
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = User.objects.create_user(
+                username=form.data["username"],
+                email=form.data["email"],
+                password=form.data["password1"]
+            )
+            user.save()
             messages.success(
                 request, f"Your account has been created! You are now able to log in."
             )
@@ -34,22 +33,17 @@ def register(request):
 @login_required
 def profile(request):
     if request.method == "POST":
-        u_form = UserUpdateForm(request.POST, instance=request.user)
-        p_form = ProfileUpdateForm(
-            request.POST, request.FILES, instance=request.user.profile
-        )
+        form = UserUpdateForm(request.POST, request.FILES, instance=request.user)
 
-        if u_form.is_valid() and p_form.is_valid():
-            u_form.save()
-            p_form.save()
+        if form.is_valid():
+            form.save()
             messages.success(request, f"Your account has been updated!")
             return redirect("profile")
 
     else:
-        u_form = UserUpdateForm(instance=request.user)
-        p_form = ProfileUpdateForm(instance=request.user.profile)
+        form = UserUpdateForm(instance=request.user)
 
-    context = {"u_form": u_form, "p_form": p_form, "title": "Profile"}
+    context = {"form": form, "title": "Profile"}
 
     return render(request, "users/profile.html", context)
 

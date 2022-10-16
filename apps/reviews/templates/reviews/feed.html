@@ -10,8 +10,8 @@
       {% endif %}
     </h1>
     <div class="btn-group col py-2 mt-2 mb-1" role="group">
-      <a type="button" class="btn btn-primary" href="{% url 'ticket-new' %}">Create Ticket</a>
-      <a type="button" class="btn btn-success" href="{% url 'review-new' %}">Write Review</a>
+      <a type="button" class="btn btn-primary" href="{% url 'reviews:ticket-new' %}">Create Ticket</a>
+      <a type="button" class="btn btn-success" href="{% url 'reviews:new' %}">Write Review</a>
     </div>
   </div>
 </div>
@@ -40,13 +40,13 @@
     <h5 class="card-title">No posts to display</h5>
     {% if request.get_full_path == "/" %}
       <p class="card-text">
-        <a href="{% url 'review-new' %}">Write</a> or
-        <a href="{% url 'review-new' %}">request</a> a review, or subscribe to a user to view their posts.
+        <a href="{% url 'reviews:new' %}">Write</a> or
+        <a href="{% url 'reviews:ticket-new' %}">request</a> a review, or subscribe to a user to view their posts.
       </p>
-      <a type="button" class="btn btn-success" href="{% url 'subscriptions' %}">View Subscriptions</a>
+      <a type="button" class="btn btn-success" href="{% url 'users:subscriptions' %}">View Subscriptions</a>
     {% else %}
-      <p class="card-text">You have not written any posts yet. <a href="{% url 'review-new' %}">Write</a> or
-        <a href="{% url 'review-new' %}">request</a> a review to get started.
+      <p class="card-text">You have not written any posts yet. <a href="{% url 'reviews:new' %}">Write</a> or
+        <a href="{% url 'reviews:ticket-new' %}">request</a> a review to get started.
       </p>
     {% endif %}
   </div>

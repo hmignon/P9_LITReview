@@ -1,6 +1,4 @@
-from django.contrib.auth.models import User
-
-from apps.users.models import UserFollow
+from apps.users.models import User, UserFollow
 from .models import Review, Ticket
 
 

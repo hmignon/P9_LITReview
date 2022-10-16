@@ -66,6 +66,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "LITReview.wsgi.application"
 
+# Django message tags (bootstrap color theme)
+
 MESSAGE_TAGS = {message_constants.ERROR: "danger"}
 
 # Database
@@ -77,6 +79,8 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+AUTH_USER_MODEL = "users.User"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -114,6 +118,8 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+# Media files
+
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = "/media/"
 
@@ -124,6 +130,6 @@ CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_REDIRECT_URL = "reviews-feed"
+LOGIN_REDIRECT_URL = "reviews:feed"
 
-LOGIN_URL = "login"
+LOGIN_URL = "users:login"

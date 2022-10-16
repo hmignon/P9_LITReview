@@ -33,10 +33,10 @@
             {% for follow in user_follows %}
               <li class="list-group-item">
                 <p class="mb-0">
-                  <img class="rounded-circle article-img" src="{{ follow.followed_user.profile.image.url }}"
+                  <img class="rounded-circle article-img" src="{{ follow.followed_user.image.url }}"
                        style="height:50px; width:50px" alt="{{ follow.followed_user.username }} profile picture">
                   {{ follow.followed_user.username }}
-                  <a class="btn btn-outline-danger btn-sm float-right mt-2" href="{% url 'confirm-unsub' follow.id %}">
+                  <a class="btn btn-outline-danger btn-sm float-right mt-2" href="{% url 'users:confirm-unsub' follow.id %}">
                     Unsubscribe
                   </a>
                 </p>
@@ -63,7 +63,7 @@
             {% for follow in followed_by %}
               <li class="list-group-item">
                 <p class="mb-0">
-                  <img class="rounded-circle article-img" src="{{ follow.user.profile.image.url }}"
+                  <img class="rounded-circle article-img" src="{{ follow.user.image.url }}"
                        style="height:50px; width:50px" alt="{{ follow.user.username }} profile picture">
                   {{ follow.user.username }}
                 </p>

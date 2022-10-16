@@ -3,22 +3,17 @@ from itertools import chain
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator
-from django.db.models import Value, CharField
-from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import CharField, Value
+from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.datastructures import MultiValueDictKeyError
 from django.views.generic import DeleteView
 
+from apps.users.models import User
 from .forms import NewReviewForm, NewTicketForm
 from .models import Review, Ticket
-from .utils import (
-    get_user_viewable_reviews,
-    get_user_viewable_tickets,
-    get_replied_tickets,
-    get_user_follows,
-)
+from .utils import (get_replied_tickets, get_user_follows, get_user_viewable_reviews, get_user_viewable_tickets)
 
 
 # -------- Feeds --------

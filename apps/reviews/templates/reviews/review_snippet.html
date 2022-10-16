@@ -9,24 +9,24 @@
       {% if post.user != user %}
 
         {% if post.user in followed_users %}
-          <a class="mr-2 mb-0" href="{% url 'user-posts' post.user.id %}">{{ post.user }}</a>
+          <a class="mr-2 mb-0" href="{% url 'reviews:userposts' post.user.id %}">{{ post.user }}</a>
         {% else %}
           <p class="mr-2 mb-0" style="display:inline">{{ post.user }}</p>
         {% endif %}
 
       {% else %}
-        <a class="mr-2 mb-0" href="{% url 'my-posts' %}">{{ post.user }}</a>
+        <a class="mr-2 mb-0" href="{% url 'reviews:myposts' %}">{{ post.user }}</a>
       {% endif %}
 
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
 
       {% if post.user == user %}
-        <a class="ml-3 text-primary" href="{% url 'review-update' post.id %}">Update</a>
-        <a class="ml-2 text-danger" href="{% url 'review-delete' post.id %}">Delete</a>
+        <a class="ml-3 text-primary" href="{% url 'reviews:update' post.id %}">Update</a>
+        <a class="ml-2 text-danger" href="{% url 'reviews:delete' post.id %}">Delete</a>
       {% elif post.user not in followed_users %}
         <div class="ml-3 text-muted d-inline">
           <i>You are not subscribed to {{ post.user }}</i>
-          <a class="ml-2 text-success" href="{% url 'subscriptions' %}">View subscriptions</a>
+          <a class="ml-2 text-success" href="{% url 'users:subscriptions' %}">View subscriptions</a>
         </div>
       {% endif %}
 
@@ -34,7 +34,7 @@
 
     <h6 class="mb-0"><span class="badge badge-success">Review</span></h6>
     <h2 class="mt-0">
-      <a class="text-dark" href="{% url 'review-detail' post.id %}">{{ post.headline }}</a> -
+      <a class="text-dark" href="{% url 'reviews:detail' post.id %}">{{ post.headline }}</a> -
       <p class="star-rating-{{ post.rating }}" id="stars">
         <i class="bi bi-star-fill"></i>
         <i class="bi bi-star-fill"></i>
@@ -54,30 +54,30 @@
         <div class="article-metadata">
           {% if post.ticket.user != user %}
             {% if post.ticket.user in followed_users %}
-              <a class="mr-2 mb-0" href="{% url 'user-posts' post.ticket.user.id %}">{{ post.ticket.user }}</a>
+              <a class="mr-2 mb-0" href="{% url 'reviews:userposts' post.ticket.user.id %}">{{ post.ticket.user }}</a>
             {% else %}
               <p class="mr-2 mb-0" style="display:inline">{{ post.ticket.user }}</p>
             {% endif %}
           {% else %}
-            <a class="mr-2 mb-0" href="{% url 'my-posts' %}">{{ post.ticket.user }}</a>
+            <a class="mr-2 mb-0" href="{% url 'reviews:myposts' %}">{{ post.ticket.user }}</a>
           {% endif %}
 
           <small class="text-muted">{{ post.ticket.time_created|date:"H:i, F d, Y" }}</small>
 
           {% if post.ticket.user == user %}
-            <a class="ml-3 text-primary" href="{% url 'ticket-update' post.ticket.id %}">Update</a>
-            <a class="ml-2 text-danger" href="{% url 'ticket-delete' post.ticket.id %}">Delete</a>
+            <a class="ml-3 text-primary" href="{% url 'reviews:ticket-update' post.ticket.id %}">Update</a>
+            <a class="ml-2 text-danger" href="{% url 'reviews:ticket-delete' post.ticket.id %}">Delete</a>
           {% elif post.ticket.user not in followed_users %}
             <div class="ml-3 text-muted" style="display:inline">
               You are not subscribed to {{ post.ticket.user }}
-              <a class="ml-2 text-success" href="{% url 'subscriptions' %}">View subscriptions</a>
+              <a class="ml-2 text-success" href="{% url 'users:subscriptions' %}">View subscriptions</a>
             </div>
           {% endif %}
 
         </div>
         <h6 class="mb-0"><span class="badge badge-primary">Ticket</span></h6>
         <h3 class="mt-0">
-          <a class="text-dark" href="{% url 'ticket-detail' post.ticket.id %}">{{ post.ticket.title }}</a>
+          <a class="text-dark" href="{% url 'reviews:ticket-detail' post.ticket.id %}">{{ post.ticket.title }}</a>
         </h3>
         <div class="ticket-description">
 

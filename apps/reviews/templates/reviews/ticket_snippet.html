@@ -9,30 +9,30 @@
       {% if post.user != user %}
 
         {% if post.user in followed_users %}
-          <a class="mr-2 mb-0" href="{% url 'user-posts' post.user.id %}">{{ post.user }}</a>
+          <a class="mr-2 mb-0" href="{% url 'reviews:userposts' post.user.id %}">{{ post.user }}</a>
         {% else %}
           <p class="mr-2 mb-0" style="display:inline">{{ post.user }}</p>
         {% endif %}
 
       {% else %}
-        <a class="mr-2 mb-0" href="{% url 'my-posts' %}">{{ post.user }}</a>
+        <a class="mr-2 mb-0" href="{% url 'reviews:myposts' %}">{{ post.user }}</a>
       {% endif %}
 
       <small class="text-muted">{{ post.time_created|date:"H:i, F d, Y" }}</small>
 
       {% if post.user == user %}
-        <a class="ml-3 text-primary" href="{% url 'ticket-update' post.id %}">Update</a>
-        <a class="ml-2 text-danger" href="{% url 'ticket-delete' post.id %}">Delete</a>
+        <a class="ml-3 text-primary" href="{% url 'reviews:ticket-update' post.id %}">Update</a>
+        <a class="ml-2 text-danger" href="{% url 'reviews:ticket-delete' post.id %}">Delete</a>
       {% elif post.user not in followed_users %}
         <div class="ml-3 text-muted d-inline">
           <i>You are not subscribed to {{ post.user }}</i>
-          <a class="ml-2 text-success" href="{% url 'subscriptions' %}">View subscriptions</a>
+          <a class="ml-2 text-success" href="{% url 'users:subscriptions' %}">View subscriptions</a>
         </div>
       {% endif %}
 
     </div>
     <h6 class="mb-0"><span class="badge badge-primary">Ticket</span></h6>
-    <h2 class="mt-0"><a class="text-dark" href="{% url 'ticket-detail' post.id %}">{{ post.title }}</a></h2>
+    <h2 class="mt-0"><a class="text-dark" href="{% url 'reviews:ticket-detail' post.id %}">{{ post.title }}</a></h2>
     <div class="ticket-description">
 
       {% if post.image %}
@@ -47,7 +47,7 @@
       {% for reply in r_reviews %}
         {% if post == reply.ticket %}
           <div class="btn float-right">
-            <a class="btn btn-outline-success btn-sm" href="{% url 'review-detail' reply.id %}">
+            <a class="btn btn-outline-success btn-sm" href="{% url 'reviews:detail' reply.id %}">
               {% if reply.user == user %}
                 View your response
               {% else %}
@@ -60,7 +60,7 @@
 
     {% elif post not in r_tickets %}
       <div class="btn float-right">
-        <a type="button" class="btn btn-success btn-sm" href="{% url 'response-review' post.id %}">
+        <a type="button" class="btn btn-success btn-sm" href="{% url 'reviews:response' post.id %}">
           {% if post.user == user %}
             Reply to your Ticket
           {% else %}
